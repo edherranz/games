@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>3D Sergeant & Patrol Drones Terrain Simulator</title>
+  <!-- Tailwind CSS for responsive mobile layout -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Standard Three.js r128 script for 100% Mobile Chrome Reliability -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #090f16;
+      color: #f1f5f9;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      touch-action: none;
+    }
+
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
+
+    .hud-glass {
+      background: rgba(13, 21, 32, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(100, 180, 255, 0.22);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Custom Mobile Range Sliders */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #1e293b;
+      border-radius: 999px;
+      outline: none;
+      border: 1px solid #334155;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #38bdf8;
+      border: 2px solid #090f16;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+      cursor: pointer;
+    }
+
+    .btn-active-walk {
+      background: linear-gradient(135deg, #16a34a, #15803d) !important;
+      border-color: #4ade80 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.45);
+    }
+
+    .btn-active-run {
+      background: linear-gradient(135deg, #ea580c, #c2410c) !important;
+      border-color: #fb923c !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 14px rgba(234, 88, 12, 0.65);
+    }
+
+    .btn-active-drone {
+      background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+      border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-emp {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border-color: #a78bfa;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.5);
+    }
+    .btn-emp:active {
+      transform: scale(0.95);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D WebGL Viewport -->
+  <div id="canvas-container"></div>
+
+  <!-- ALWAYS-VISIBLE MOBILE TOP HUD -->
+  <header class="fixed top-2 left-2 right-2 z-20 max-w-2xl mx-auto pointer-events-none">
+    <div class="hud-glass rounded-2xl p-2.5 pointer-events-auto flex flex-col gap-2">
+      
+      <!-- Row 1: Walk / Run (Sprint) / Drones On-Off / EMP Pulse -->
+      <div class="grid grid-cols-4 gap-1.5">
+        <button id="btn-walk" type="button" class="px-2 py-2 rounded-xl border border-slate-600 bg-slate-800/90 text-slate-200 font-bold text-xs tracking-wide transition-all flex items-center justify-center gap-1">
+          <span>🚶</span><span>WALK</span>
+        </button>
+
+        <button id="btn-run" type="button" class="btn-active-run px-2 py-2 rounded-xl border border-slate-600 bg-slate-800/90 text-slate-200 font-bold text-xs tracking-wide transition-all flex items-center justify-center gap-1">
+          <span>🏃</span><span>RUN (SPRINT)</span>
+        </button>
+
+        <button id="btn-drones" type="button" class="btn-active-drone px-2 py-2 rounded-xl border border-slate-600 bg-slate-800/90 text-slate-200 font-bold text-xs tracking-wide transition-all flex items-center justify-center gap-1">
+          <span>🛸</span><span id="drone-btn-text">DRONES: ON</span>
+        </button>
+
+        <button id="btn-emp" type="button" class="btn-emp px-2 py-2 rounded-xl border font-bold text-xs tracking-wide transition-all flex items-center justify-center gap-1">
+          <span>⚡</span><span>EMP PULSE</span>
+        </button>
+      </div>
+
+      <!-- Row 2: Terrain Preset Dropdown, Path Mode Dropdown & Standalone HTML Download Button -->
+      <div class="grid grid-cols-12 gap-1.5 items-center">
+        <div class="col-span-5">
+          <select id="terrain-select" aria-label="Terrain Preset" class="w-full bg-slate-900/95 text-slate-100 border border-slate-600 rounded-xl px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:border-sky-400">
+            <option value="hills">⛰️ Rolling Hills</option>
+            <option value="ridges">🏔️ Jagged Ridges</option>
+            <option value="dunes">🏜️ Sine Dunes</option>
+            <option value="crater">🌋 Crater Basin</option>
+            <option value="flat">🟩 Flat Ground</option>
+          </select>
+        </div>
+
+        <div class="col-span-4">
+          <select id="path-select" aria-label="Path Mode" class="w-full bg-slate-900/95 text-slate-100 border border-slate-600 rounded-xl px-2 py-1.5 text-xs font-semibold focus:outline-none focus:border-sky-400">
+            <option value="loop">🔄 Circle Loop</option>
+            <option value="fig8">♾️ Figure-8</option>
+            <option value="tap">📍 Tap Waypoint</option>
+          </select>
+        </div>
+
+        <div class="col-span-3">
+          <button id="btn-download" type="button" class="w-full py-1.5 px-2 rounded-xl bg-emerald-600/90 hover:bg-emerald-500 border border-emerald-400 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-md active:scale-95 transition">
+            <span>⬇️</span><span>.HTML</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Row 3: Real-Time Terrain Height (Amplitude) & Roughness (Frequency) Sliders -->
+      <div class="grid grid-cols-2 gap-3 pt-0.5 px-1">
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-semibold text-slate-300 whitespace-nowrap">Height: <strong id="lbl-amp" class="text-sky-400 font-mono">6.5m</strong></span>
+          <input id="slider-amp" type="range" min="0" max="15" step="0.5" value="6.5" />
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-semibold text-slate-300 whitespace-nowrap">Rough: <strong id="lbl-freq" class="text-sky-400 font-mono">3.5x</strong></span>
+          <input id="slider-freq" type="range" min="1" max="8" step="0.5" value="3.5" />
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Toast Banner for Download / EMP Feedback -->
+  <div id="toast-banner" class="fixed top-40 left-1/2 -translate-x-1/2 z-30 pointer-events-none opacity-0 transition-opacity duration-300">
+    <div class="hud-glass px-4 py-2 rounded-full border border-sky-400/50 text-xs font-bold text-sky-200 tracking-wide shadow-lg whitespace-nowrap" id="toast-text">
+      EMP Pulse Activated!
+    </div>
+  </div>
+
+  <!-- BOTTOM TELEMETRY & TOUCH INSTRUCTIONS BAR -->
+  <footer class="fixed bottom-2.5 left-2.5 right-2.5 z-20 max-w-2xl mx-auto pointer-events-none">
+    <div class="hud-glass rounded-xl px-3 py-2 flex items-center justify-between text-[11px] sm:text-xs">
+      <div class="text-slate-300 font-medium truncate">
+        <span class="text-sky-300 font-semibold">Touch:</span> Drag Orbit • Pinch Zoom • Tap Ground to Move
+      </div>
+      <div class="flex items-center gap-3 shrink-0 ml-2">
+        <span id="drone-alert" class="text-cyan-300 font-bold tracking-wide">PATROL: SCANNING</span>
+        <span id="gait-readout" class="text-orange-400 font-extrabold tracking-wide">SPRINT: 8.6 m/s</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MAIN 3D ENGINE & KINEMATICS SCRIPT -->
+  <script>
+    (function () {
+      // =========================================================================
+      // 1. APPLICATION STATE (Starts in 'run' immediately!)
+      // =========================================================================
+      const state = {
+        gait: 'run',          // Starts in 'run' so running is immediately visible!
+        dronesActive: true,
+        terrainType: 'hills', // 'hills' | 'ridges' | 'dunes' | 'crater' | 'flat'
+        pathMode: 'loop',     // 'loop' | 'fig8' | 'tap'
+        amplitude: 6.5,
+        frequency: 3.5,
+        empTimer: 0           // > 0 when EMP shockwave is stunning patrol drones
+      };
+
+      function showToast(msg) {
+        const banner = document.getElementById('toast-banner');
+        const text = document.getElementById('toast-text');
+        text.textContent = msg;
+        banner.style.opacity = '1';
+        clearTimeout(window.__toastTimer);
+        window.__toastTimer = setTimeout(() => {
+          banner.style.opacity = '0';
+        }, 2200);
+      }
+
+      // =========================================================================
+      // 2. THREE.JS SCENE, CAMERA & RENDERER
+      // =========================================================================
+      const container = document.getElementById('canvas-container');
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x091019);
+      scene.fog = new THREE.FogExp2(0x091019, 0.011);
+
+      const camera = new THREE.PerspectiveCamera(
+        52,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        300
+      );
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const hemiLight = new THREE.HemisphereLight(0x9ec5ff, 0x263322, 0.8);
+      scene.add(hemiLight);
+
+      const sunLight = new THREE.DirectionalLight(0xfff4e0, 1.2);
+      sunLight.position.set(28, 48, 26);
+      sunLight.castShadow = true;
+      sunLight.shadow.mapSize.width = 1024;
+      sunLight.shadow.mapSize.height = 1024;
+      sunLight.shadow.camera.near = 5;
+      sunLight.shadow.camera.far = 120;
+      const d = 38;
+      sunLight.shadow.camera.left = -d;
+      sunLight.shadow.camera.right = d;
+      sunLight.shadow.camera.top = d;
+      sunLight.shadow.camera.bottom = -d;
+      scene.add(sunLight);
+
+      // =========================================================================
+      // 3. REAL-TIME CUSTOMIZABLE 3D TERRAIN ENGINE
+      // =========================================================================
+      function getTerrainHeight(x, z) {
+        const A = state.amplitude;
+        const F = state.frequency * 0.028;
+        if (state.terrainType === 'flat' || A <= 0.01) return 0;
+
+        if (state.terrainType === 'hills') {
+          return A * (
+            Math.sin(x * F) * Math.cos(z * F) * 0.85 +
+            0.35 * Math.sin((x * 1.3 + z * 0.9) * F * 1.8) +
+            0.15 * Math.cos((x - z * 1.4) * F * 3.1)
+          );
+        } else if (state.terrainType === 'ridges') {
+          const r1 = 1.0 - Math.abs(Math.sin(x * F * 1.1) * Math.cos(z * F * 1.1));
+          const r2 = 0.45 * (1.0 - Math.abs(Math.sin((x * 1.7 - z * 1.3) * F * 1.6)));
+          return A * ((r1 * r1 + r2) - 0.55) * 1.35;
+        } else if (state.terrainType === 'dunes') {
+          const wave = Math.sin(x * F * 1.5 + Math.sin(z * F * 0.9) * 1.5);
+          const sharp = Math.pow((wave + 1) * 0.5, 1.6) * 2 - 1;
+          return A * sharp * 0.85;
+        } else if (state.terrainType === 'crater') {
+          const dist = Math.sqrt(x * x + z * z);
+          const rim = Math.exp(-Math.pow((dist - 19) / 5.2, 2)) * A * 1.45;
+          const bowl = dist < 19 ? -A * 0.55 * (1 - dist / 19) : 0;
+          const rough = 0.16 * A * Math.sin(x * F * 2.4) * Math.cos(z * F * 2.4);
+          return rim + bowl + rough;
+        }
+        return 0;
+      }
+
+      const TERRAIN_SIZE = 90;
+      const TERRAIN_SEGS = 104;
+      const terrainGeo = new THREE.PlaneGeometry(TERRAIN_SIZE, TERRAIN_SIZE, TERRAIN_SEGS, TERRAIN_SEGS);
+      terrainGeo.rotateX(-Math.PI / 2);
+
+      const vCount = terrainGeo.attributes.position.count;
+      const colorBuffer = new Float32Array(vCount * 3);
+      terrainGeo.setAttribute('color', new THREE.BufferAttribute(colorBuffer, 3));
+
+      const terrainMat = new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        roughness: 0.84,
+        metalness: 0.06,
+        flatShading: true
+      });
+
+      const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
+      terrainMesh.receiveShadow = true;
+      scene.add(terrainMesh);
+
+      function rebuildTerrain() {
+        const pos = terrainGeo.attributes.position;
+        const col = terrainGeo.attributes.color;
+        const c = new THREE.Color();
+        const maxH = Math.max(state.amplitude, 3.0) + 1.0;
+
+        for (let i = 0; i < pos.count; i++) {
+          const vx = pos.getX(i);
+          const vz = pos.getZ(i);
+          const vy = getTerrainHeight(vx, vz);
+          pos.setY(i, vy);
+
+          const normH = (vy + maxH) / (2 * maxH);
+          if (state.terrainType === 'dunes') {
+            c.setHSL(0.09, 0.55, 0.32 + normH * 0.28);
+          } else {
+            if (normH < 0.36) c.setHex(0x284e3a);
+            else if (normH < 0.64) c.setHex(0x466d46);
+            else if (normH < 0.84) c.setHex(0x6e6a59);
+            else c.setHex(0x9aa5b1);
+          }
+          col.setXYZ(i, c.r, c.g, c.b);
+        }
+
+        pos.needsUpdate = true;
+        col.needsUpdate = true;
+        terrainGeo.computeVertexNormals();
+        updatePathTrail();
+      }
+
+      // =========================================================================
+      // 4. PATH TRAIL & TAP-TERRAIN WAYPOINT BEACON
+      // =========================================================================
+      const trailPoints = [];
+      for (let i = 0; i <= 96; i++) trailPoints.push(new THREE.Vector3());
+      const trailGeo = new THREE.BufferGeometry().setFromPoints(trailPoints);
+      const trailMat = new THREE.LineBasicMaterial({ color: 0xfbbf24, linewidth: 2 });
+      const trailLine = new THREE.Line(trailGeo, trailMat);
+      scene.add(trailLine);
+
+      // Glowing Waypoint Marker for Tap-to-Move
+      const waypointGroup = new THREE.Group();
+      waypointGroup.visible = false;
+      scene.add(waypointGroup);
+
+      const wpRing = new THREE.Mesh(
+        new THREE.RingGeometry(0.45, 0.85, 24),
+        new THREE.MeshBasicMaterial({ color: 0xf97316, side: THREE.DoubleSide })
+      );
+      wpRing.rotation.x = -Math.PI / 2;
+      wpRing.position.y = 0.12;
+      waypointGroup.add(wpRing);
+
+      const wpPillar = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.08, 0.08, 2.8, 10),
+        new THREE.MeshBasicMaterial({ color: 0xfb923c, transparent: true, opacity: 0.75 })
+      );
+      wpPillar.position.y = 1.4;
+      waypointGroup.add(wpPillar);
+
+      function getPathXZ(u) {
+        if (state.pathMode === 'loop') {
+          const R = 20;
+          return {
+            x: Math.cos(u) * R * (1 + 0.12 * Math.sin(u * 3)),
+            z: Math.sin(u) * R * (1 + 0.12 * Math.cos(u * 2))
+          };
+        } else {
+          // Figure-8 circuit
+          const R = 23;
+          return {
+            x: Math.sin(u) * R,
+            z: Math.sin(u * 2) * (R * 0.56)
+          };
+        }
+      }
+
+      function updatePathTrail() {
+        if (state.pathMode === 'tap') {
+          trailLine.visible = false;
+          waypointGroup.position.y = getTerrainHeight(waypointGroup.position.x, waypointGroup.position.z);
+          return;
+        }
+        trailLine.visible = true;
+        const pts = [];
+        for (let i = 0; i <= 96; i++) {
+          const u = (i / 96) * Math.PI * 2;
+          const p = getPathXZ(u);
+          pts.push(new THREE.Vector3(p.x, getTerrainHeight(p.x, p.z) + 0.22, p.z));
+        }
+        trailLine.geometry.setFromPoints(pts);
+      }
+
+      // =========================================================================
+      // 5. ARTICULATED 3D DRILL SERGEANT CHARACTER
+      // =========================================================================
+      const sergeantRoot = new THREE.Group();
+      scene.add(sergeantRoot);
+
+      const matOlive = new THREE.MeshStandardMaterial({ color: 0x3f5a36, roughness: 0.65 });
+      const matVest = new THREE.MeshStandardMaterial({ color: 0x253520, roughness: 0.75 });
+      const matSkin = new THREE.MeshStandardMaterial({ color: 0xdba37e, roughness: 0.55 });
+      const matBoot = new THREE.MeshStandardMaterial({ color: 0x16191d, roughness: 0.8 });
+      const matGold = new THREE.MeshStandardMaterial({
+        color: 0xfacc15,
+        emissive: 0xca8a04,
+        emissiveIntensity: 0.35,
+        roughness: 0.3
+      });
+      const matVisor = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.15, metalness: 0.85 });
+
+      // Pelvis / Hips (root of leg & spine kinematics)
+      const pelvis = new THREE.Group();
+      pelvis.position.y = 1.12;
+      sergeantRoot.add(pelvis);
+
+      const pelvisBox = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.24, 0.30), matOlive);
+      pelvisBox.castShadow = true;
+      pelvis.add(pelvisBox);
+
+      // Gold Belt Buckle
+      const buckle = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.10, 0.33), matGold);
+      buckle.position.set(0, 0.04, 0);
+      pelvis.add(buckle);
+
+      // Torso & Tactical Vest
+      const torso = new THREE.Group();
+      torso.position.y = 0.12;
+      pelvis.add(torso);
+
+      const chest = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.68, 0.34), matVest);
+      chest.position.y = 0.34;
+      chest.castShadow = true;
+      torso.add(chest);
+
+      // Sergeant Gold Chevrons on Chest
+      const chevron1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.055, 0.36), matGold);
+      chevron1.position.set(0, 0.48, 0);
+      torso.add(chevron1);
+
+      const chevron2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.055, 0.36), matGold);
+      chevron2.position.set(0, 0.39, 0);
+      torso.add(chevron2);
+
+      // Tactical Backpack
+      const pack = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.46, 0.18), matOlive);
+      pack.position.set(0, 0.36, -0.22);
+      pack.castShadow = true;
+      torso.add(pack);
+
+      // Head, Aviator Shades & Drill Sergeant Campaign Hat
+      const headGroup = new THREE.Group();
+      headGroup.position.y = 0.72;
+      torso.add(headGroup);
+
+      const headBall = new THREE.Mesh(new THREE.SphereGeometry(0.21, 16, 16), matSkin);
+      headBall.position.y = 0.17;
+      headBall.castShadow = true;
+      headGroup.add(headBall);
+
+      // Aviator Sunglasses
+      const shades = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.12), matVisor);
+      shades.position.set(0, 0.19, 0.16);
+      headGroup.add(shades);
+
+      // Drill Instructor Flat-Brim Campaign Hat
+      const hatBrim = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.04, 20), matVest);
+      hatBrim.position.y = 0.33;
+      hatBrim.castShadow = true;
+      headGroup.add(hatBrim);
+
+      const hatBand = new THREE.Mesh(new THREE.CylinderGeometry(0.225, 0.225, 0.05, 16), matGold);
+      hatBand.position.y = 0.36;
+      headGroup.add(hatBand);
+
+      const hatCrown = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.22, 0.24, 12), matOlive);
+      hatCrown.position.y = 0.45;
+      hatCrown.castShadow = true;
+      headGroup.add(hatCrown);
+
+      // Articulated Arms (Shoulder + Upper Arm + Sleeve Chevron + Elbow + Forearm + Hand)
+      function createArm(side) {
+        const shoulder = new THREE.Group();
+        shoulder.position.set(side * 0.37, 0.60, 0);
+        torso.add(shoulder);
+
+        const upperArm = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.072, 0.44, 12), matOlive);
+        upperArm.position.y = -0.22;
+        upperArm.castShadow = true;
+        shoulder.add(upperArm);
+
+        const sleeveStripe = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.06, 0.15), matGold);
+        sleeveStripe.position.y = -0.18;
+        shoulder.add(sleeveStripe);
+
+        const elbow = new THREE.Group();
+        elbow.position.y = -0.44;
+        shoulder.add(elbow);
+
+        const forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.058, 0.40, 12), matSkin);
+        forearm.position.y = -0.20;
+        forearm.castShadow = true;
+        elbow.add(forearm);
+
+        const fist = new THREE.Mesh(new THREE.SphereGeometry(0.075, 10, 10), matSkin);
+        fist.position.y = -0.41;
+        elbow.add(fist);
+
+        return { shoulder, elbow };
+      }
+
+      // Articulated Legs (Hip + Thigh + Knee + Shin + Combat Boot)
+      function createLeg(side) {
+        const hip = new THREE.Group();
+        hip.position.set(side * 0.16, 0, 0);
+        pelvis.add(hip);
+
+        const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.09, 0.54, 12), matOlive);
+        thigh.position.y = -0.27;
+        thigh.castShadow = true;
+        hip.add(thigh);
+
+        const knee = new THREE.Group();
+        knee.position.y = -0.54;
+        hip.add(knee);
+
+        const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.088, 0.07, 0.52, 12), matOlive);
+        shin.position.y = -0.26;
+        shin.castShadow = true;
+        knee.add(shin);
+
+        const boot = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.14, 0.32), matBoot);
+        boot.position.set(0, -0.52, 0.06);
+        boot.castShadow = true;
+        knee.add(boot);
+
+        return { hip, knee, boot };
+      }
+
+      const leftArm = createArm(1);
+      const rightArm = createArm(-1);
+      const leftLeg = createLeg(1);
+      const rightLeg = createLeg(-1);
+
+      // Scale Sergeant slightly for commanding visibility on phone screens
+      sergeantRoot.scale.setScalar(1.18);
+
+      // =========================================================================
+      // 6. FOOTSTEP DUST PUFFS & EMP SHOCKWAVE DOME
+      // =========================================================================
+      const dustPool = [];
+      const dustGroup = new THREE.Group();
+      scene.add(dustGroup);
+
+      function spawnDustPuff(x, y, z, isSprint) {
+        const puff = new THREE.Mesh(
+          new THREE.RingGeometry(0.1, isSprint ? 0.42 : 0.25, 12),
+          new THREE.MeshBasicMaterial({
+            color: isSprint ? 0xfb923c : 0x94a3b8,
+            transparent: true,
+            opacity: 0.65,
+            side: THREE.DoubleSide
+          })
+        );
+        puff.rotation.x = -Math.PI / 2;
+        puff.position.set(x, y + 0.08, z);
+        dustGroup.add(puff);
+        dustPool.push({ mesh: puff, age: 0, maxAge: isSprint ? 0.55 : 0.4 });
+      }
+
+      // EMP Expanding Energy Dome
+      const empGeo = new THREE.SphereGeometry(1, 24, 16);
+      const empMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.0
+      });
+      const empSphere = new THREE.Mesh(empGeo, empMat);
+      empSphere.visible = false;
+      scene.add(empSphere);
+
+      function triggerEMPPulse() {
+        state.empTimer = 2.6; // 2.6 seconds of drone stun & scatter
+        empSphere.visible = true;
+        empSphere.scale.setScalar(0.5);
+        empSphere.position.copy(sergeantRoot.position);
+        empSphere.position.y += 1.2;
+        empMat.opacity = 0.9;
+        showToast('⚡ EMP BLAST! Patrol Drones Scattered!');
+      }
+
+      // =========================================================================
+      // 7. SQUADRON OF 3 AUTONOMOUS PATROL DRONES
+      // =========================================================================
+      const droneSquadGroup = new THREE.Group();
+      scene.add(droneSquadGroup);
+      const drones = [];
+
+      const matDroneHull = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.7, roughness: 0.25 });
+      const matRotorBlade = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+
+      for (let i = 0; i < 3; i++) {
+        const dRoot = new THREE.Group();
+
+        // Central Armored Chassis
+        const hull = new THREE.Mesh(new THREE.OctahedronGeometry(0.62, 1), matDroneHull);
+        hull.scale.set(1.1, 0.42, 1.1);
+        hull.castShadow = true;
+        dRoot.add(hull);
+
+        // Glowing Scanner Eye (Cyan during normal scan, Orange/Red on lock or EMP stun)
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.19, 12, 12), eyeMat);
+        eye.position.set(0, -0.08, 0.48);
+        dRoot.add(eye);
+
+        // Translucent Volumetric Searchlight Cone
+        const coneMat = new THREE.MeshBasicMaterial({
+          color: 0x00f0ff,
+          transparent: true,
+          opacity: 0.16,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        });
+        const searchCone = new THREE.Mesh(new THREE.ConeGeometry(2.2, 6.5, 18, 1, true), coneMat);
+        searchCone.position.y = -3.3;
+        dRoot.add(searchCone);
+
+        // 4 Quadcopter Arms & High-Speed Spinning Rotors
+        const rotors = [];
+        const offsets = [[-0.72, -0.72], [0.72, -0.72], [-0.72, 0.72], [0.72, 0.72]];
+        offsets.forEach(([ox, oz]) => {
+          const strut = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.06, 1.05), matDroneHull);
+          strut.position.set(ox * 0.5, 0, oz * 0.5);
+          strut.rotation.y = Math.atan2(ox, oz);
+          dRoot.add(strut);
+
+          const blade = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.025, 0.1), matRotorBlade);
+          blade.position.set(ox, 0.09, oz);
+          dRoot.add(blade);
+          rotors.push(blade);
+        });
+
+        droneSquadGroup.add(dRoot);
+        drones.push({
+          root: dRoot,
+          rotors,
+          eyeMat,
+          coneMat,
+          orbitAngle: i * ((Math.PI * 2) / 3),
+          baseRadius: 5.5 + i * 2.4,
+          scatterOffset: 0
+        });
+      }
+
+      // =========================================================================
+      // 8. MOBILE TOUCH CAMERA ORBIT, PINCH ZOOM & TAP-TO-WAYPOINT
+      // =========================================================================
+      let camYaw = 0.55;
+      let camPitch = 0.42;
+      let camDist = 17.5;
+      let pointerDown = false;
+      let dragged = false;
+      let downX = 0;
+      let downY = 0;
+      let pinchDist0 = 0;
+
+      const raycaster = new THREE.Raycaster();
+      const pointerNDC = new THREE.Vector2();
+      const customTarget = new THREE.Vector3(0, 0, 14);
+
+      container.addEventListener('pointerdown', (e) => {
+        pointerDown = true;
+        dragged = false;
+        downX = e.clientX;
+        downY = e.clientY;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!pointerDown) return;
+        const dx = e.clientX - downX;
+        const dy = e.clientY - downY;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) dragged = true;
+        camYaw -= dx * 0.0075;
+        camPitch = Math.max(0.12, Math.min(1.38, camPitch + dy * 0.0075));
+        downX = e.clientX;
+        downY = e.clientY;
+      });
+
+      window.addEventListener('pointerup', (e) => {
+        if (pointerDown && !dragged && e.target === renderer.domElement) {
+          pointerNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+          pointerNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+          raycaster.setFromCamera(pointerNDC, camera);
+          const hits = raycaster.intersectObject(terrainMesh, false);
+          if (hits.length > 0) {
+            state.pathMode = 'tap';
+            document.getElementById('path-select').value = 'tap';
+            customTarget.copy(hits[0].point);
+            waypointGroup.position.copy(customTarget);
+            waypointGroup.visible = true;
+            updatePathTrail();
+            showToast('📍 Waypoint Placed! Sergeant Moving Out!');
+          }
+        }
+        pointerDown = false;
+      });
+
+      container.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          pinchDist0 = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+          const d = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          camDist = Math.max(6.5, Math.min(48, camDist - (d - pinchDist0) * 0.045));
+          pinchDist0 = d;
+        }
+      }, { passive: true });
+
+      // Mouse wheel zoom support for desktop preview testing
+      container.addEventListener('wheel', (e) => {
+        camDist = Math.max(6.5, Math.min(48, camDist + e.deltaY * 0.015));
+      }, { passive: true });
+
+      // =========================================================================
+      // 9. TOP HUD CONTROLS & STANDALONE .HTML DOWNLOAD GENERATOR
+      // =========================================================================
+      const btnWalk = document.getElementById('btn-walk');
+      const btnRun = document.getElementById('btn-run');
+      const btnDrones = document.getElementById('btn-drones');
+      const droneBtnText = document.getElementById('drone-btn-text');
+      const btnEmp = document.getElementById('btn-emp');
+      const btnDownload = document.getElementById('btn-download');
+      const gaitReadout = document.getElementById('gait-readout');
+      const droneAlert = document.getElementById('drone-alert');
+
+      btnWalk.addEventListener('click', () => {
+        state.gait = 'walk';
+        btnWalk.classList.add('btn-active-walk');
+        btnRun.classList.remove('btn-active-run');
+        gaitReadout.textContent = 'WALK: 3.2 m/s';
+        gaitReadout.className = 'text-emerald-400 font-extrabold tracking-wide';
+      });
+
+      btnRun.addEventListener('click', () => {
+        state.gait = 'run';
+        btnRun.classList.add('btn-active-run');
+        btnWalk.classList.remove('btn-active-walk');
+        gaitReadout.textContent = 'SPRINT: 8.6 m/s';
+        gaitReadout.className = 'text-orange-400 font-extrabold tracking-wide';
+      });
+
+      btnDrones.addEventListener('click', () => {
+        state.dronesActive = !state.dronesActive;
+        droneSquadGroup.visible = state.dronesActive;
+        if (state.dronesActive) {
+          btnDrones.classList.add('btn-active-drone');
+          droneBtnText.textContent = 'DRONES: ON';
+          droneAlert.textContent = 'PATROL: SCANNING';
+        } else {
+          btnDrones.classList.remove('btn-active-drone');
+          droneBtnText.textContent = 'DRONES: OFF';
+          droneAlert.textContent = 'PATROL: OFFLINE';
+        }
+      });
+
+      btnEmp.addEventListener('click', triggerEMPPulse);
+
+      document.getElementById('terrain-select').addEventListener('change', (e) => {
+        state.terrainType = e.target.value;
+        rebuildTerrain();
+      });
+
+      document.getElementById('path-select').addEventListener('change', (e) => {
+        state.pathMode = e.target.value;
+        if (state.pathMode === 'tap') {
+          customTarget.set(
+            sergeantRoot.position.x + Math.sin(sergeantRoot.rotation.y) * 12,
+            0,
+            sergeantRoot.position.z + Math.cos(sergeantRoot.rotation.y) * 12
+          );
+          customTarget.y = getTerrainHeight(customTarget.x, customTarget.z);
+          waypointGroup.position.copy(customTarget);
+          waypointGroup.visible = true;
+          showToast('Tap anywhere on the 3D terrain to set waypoints!');
+        } else {
+          waypointGroup.visible = false;
+        }
+        updatePathTrail();
+      });
+
+      document.getElementById('slider-amp').addEventListener('input', (e) => {
+        state.amplitude = parseFloat(e.target.value);
+        document.getElementById('lbl-amp').textContent = state.amplitude.toFixed(1) + 'm';
+        rebuildTerrain();
+      });
+
+      document.getElementById('slider-freq').addEventListener('input', (e) => {
+        state.frequency = parseFloat(e.target.value);
+        document.getElementById('lbl-freq').textContent = state.frequency.toFixed(1) + 'x';
+        rebuildTerrain();
+      });
+
+      // Download Standalone .HTML File directly to Pixel Phone
+      btnDownload.addEventListener('click', () => {
+        try {
+          const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+          const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'sergeant_drones_3d.html';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 1500);
+          showToast('⬇️ Saved sergeant_drones_3d.html! Open with Chrome.');
+        } catch (err) {
+          showToast('Download ready — use browser Share/Save Page if blocked.');
+        }
+      });
+
+      // =========================================================================
+      // 10. BIOMECHANICAL SPRINT / WALK & DRONE PATROL ANIMATION LOOP
+      // =========================================================================
+      rebuildTerrain();
+
+      let pathU = 0;
+      let gaitCycle = 0;
+      let charX = 20;
+      let charZ = 0;
+      let charYaw = 0;
+      let prevStepSign = 1;
+      let lastTime = performance.now();
+
+      function animate(now) {
+        requestAnimationFrame(animate);
+        const dt = Math.min((now - lastTime) / 1000, 0.08);
+        lastTime = now;
+
+        const isSprint = state.gait === 'run';
+        const speed = isSprint ? 8.8 : 3.2;
+        const cadence = isSprint ? 14.2 : 5.8;
+
+        // 1. Move Sergeant along active path or toward tapped waypoint
+        let isMoving = true;
+        let nextX = charX;
+        let nextZ = charZ;
+
+        if (state.pathMode === 'tap') {
+          const dx = customTarget.x - charX;
+          const dz = customTarget.z - charZ;
+          const dist = Math.hypot(dx, dz);
+          if (dist > 0.45) {
+            nextX += (dx / dist) * speed * dt;
+            nextZ += (dz / dist) * speed * dt;
+            charYaw = Math.atan2(dx, dz);
+          } else {
+            isMoving = false;
+          }
+          wpRing.rotation.z += dt * 2.5;
+        } else {
+          pathU = (pathU + speed * 0.046 * dt) % (Math.PI * 2);
+          const pCurr = getPathXZ(pathU);
+          const pNext = getPathXZ(pathU + 0.045);
+          nextX = pCurr.x;
+          nextZ = pCurr.z;
+          charYaw = Math.atan2(pNext.x - pCurr.x, pNext.z - pCurr.z);
+        }
+
+        const groundY = getTerrainHeight(nextX, nextZ);
+        const aheadY = getTerrainHeight(nextX + Math.sin(charYaw), nextZ + Math.cos(charYaw));
+        const slope = aheadY - groundY;
+
+        charX = nextX;
+        charZ = nextZ;
+        sergeantRoot.position.set(charX, groundY, charZ);
+        sergeantRoot.rotation.y = charYaw;
+
+        // 2. Articulated Limb Kinematics (Exaggerated Sprint vs Upright Walk)
+        if (isMoving) {
+          gaitCycle += cadence * dt;
+        }
+        const s = isMoving ? Math.sin(gaitCycle) : 0;
+        const c = isMoving ? Math.cos(gaitCycle) : 1;
+
+        // Spawn dust rings on foot strikes
+        if (isMoving && Math.sign(s) !== prevStepSign) {
+          prevStepSign = Math.sign(s);
+          spawnDustPuff(charX, groundY, charZ, isSprint);
+        }
+
+        if (isSprint && isMoving) {
+          // EXAGGERATED SPRINT: High-knee drive, 90-deg bent elbows, forward lean, vertical flight bounce
+          const flightBounce = Math.abs(Math.sin(gaitCycle)) * 0.25;
+          pelvis.position.y = 1.05 + flightBounce;
+          pelvis.rotation.y = s * 0.22;
+          pelvis.rotation.z = c * 0.06;
+
+          // Pronounced forward torso lean + uphill adaptation
+          torso.rotation.x = 0.38 + Math.max(-0.18, Math.min(0.28, slope * 0.32));
+          torso.rotation.y = -s * 0.24;
+          headGroup.rotation.x = -0.22;
+
+          // High-knee drive & rapid heel recovery
+          leftLeg.hip.rotation.x = -s * 1.25 - 0.18;
+          rightLeg.hip.rotation.x = s * 1.25 - 0.18;
+          leftLeg.knee.rotation.x = Math.max(0.18, c * 1.55 + 0.72);
+          rightLeg.knee.rotation.x = Math.max(0.18, -c * 1.55 + 0.72);
+
+          // 90-degree bent-elbow sprinter arm pump
+          leftArm.shoulder.rotation.x = s * 1.18;
+          rightArm.shoulder.rotation.x = -s * 1.18;
+          leftArm.elbow.rotation.x = -1.48 - Math.max(0, -s * 0.35);
+          rightArm.elbow.rotation.x = -1.48 - Math.max(0, s * 0.35);
+        } else if (isMoving) {
+          // MARCHING WALK: Upright drill posture, natural pendulum swing
+          const walkBob = Math.abs(Math.cos(gaitCycle)) * 0.065;
+          pelvis.position.y = 1.12 + walkBob;
+          pelvis.rotation.y = s * 0.09;
+          pelvis.rotation.z = c * 0.03;
+
+          torso.rotation.x = 0.06 + Math.max(-0.15, Math.min(0.22, slope * 0.25));
+          torso.rotation.y = -s * 0.10;
+          headGroup.rotation.x = 0;
+
+          leftLeg.hip.rotation.x = -s * 0.58;
+          rightLeg.hip.rotation.x = s * 0.58;
+          leftLeg.knee.rotation.x = Math.max(0.05, c * 0.58 + 0.25);
+          rightLeg.knee.rotation.x = Math.max(0.05, -c * 0.58 + 0.25);
+
+          leftArm.shoulder.rotation.x = s * 0.52;
+          rightArm.shoulder.rotation.x = -s * 0.52;
+          leftArm.elbow.rotation.x = -0.32;
+          rightArm.elbow.rotation.x = -0.32;
+        } else {
+          // Idle at waypoint
+          pelvis.position.y = 1.12 + Math.sin(now * 0.003) * 0.02;
+          torso.rotation.x = 0.03;
+          leftLeg.hip.rotation.x = 0;
+          rightLeg.hip.rotation.x = 0;
+          leftLeg.knee.rotation.x = 0.05;
+          rightLeg.knee.rotation.x = 0.05;
+          leftArm.shoulder.rotation.x = 0;
+          rightArm.shoulder.rotation.x = 0;
+          leftArm.elbow.rotation.x = -0.2;
+          rightArm.elbow.rotation.x = -0.2;
+        }
+
+        // 3. Update Footstep Dust Particles
+        for (let i = dustPool.length - 1; i >= 0; i--) {
+          const p = dustPool[i];
+          p.age += dt;
+          if (p.age >= p.maxAge) {
+            dustGroup.remove(p.mesh);
+            p.mesh.geometry.dispose();
+            p.mesh.material.dispose();
+            dustPool.splice(i, 1);
+          } else {
+            const t = p.age / p.maxAge;
+            p.mesh.scale.setScalar(1 + t * 2.3);
+            p.mesh.material.opacity = (1 - t) * 0.6;
+          }
+        }
+
+        // 4. Update EMP Shockwave & Autonomous Patrol Drones
+        if (state.empTimer > 0) {
+          state.empTimer = Math.max(0, state.empTimer - dt);
+          const progress = 1 - state.empTimer / 2.6;
+          if (progress < 0.45) {
+            empSphere.scale.setScalar(1 + progress * 42);
+            empSphere.position.set(charX, groundY + 1.2, charZ);
+            empMat.opacity = (1 - progress / 0.45) * 0.85;
+          } else {
+            empSphere.visible = false;
+          }
+          droneAlert.textContent = '⚡ DRONES STUNNED!';
+          droneAlert.className = 'text-purple-400 font-bold tracking-wide';
+        } else if (state.dronesActive) {
+          empSphere.visible = false;
+          droneAlert.textContent = 'PATROL: LOCKED ON';
+          droneAlert.className = 'text-cyan-300 font-bold tracking-wide';
+        }
+
+        if (state.dronesActive) {
+          drones.forEach((d, idx) => {
+            const isStunned = state.empTimer > 0;
+            d.orbitAngle += (isStunned ? 3.8 : 1.15 + idx * 0.3) * dt;
+            const targetScatter = isStunned ? 11.0 : 0.0;
+            d.scatterOffset += (targetScatter - d.scatterOffset) * Math.min(1, dt * 5);
+
+            const r = d.baseRadius + d.scatterOffset;
+            const dx = charX + Math.cos(d.orbitAngle) * r;
+            const dz = charZ + Math.sin(d.orbitAngle) * r;
+            const hoverY = getTerrainHeight(dx, dz) + 5.6 + Math.sin(now * 0.004 + idx) * 0.65;
+
+            d.root.position.set(dx, hoverY, dz);
+
+            if (isStunned) {
+              // Tumble wildly when hit by EMP pulse
+              d.root.rotation.x += 9 * dt;
+              d.root.rotation.z += 7 * dt;
+              d.eyeMat.color.setHex(0xf59e0b);
+              d.coneMat.color.setHex(0xf59e0b);
+            } else {
+              d.root.lookAt(charX, groundY + 1.1, charZ);
+              d.eyeMat.color.setHex(0x00f0ff);
+              d.coneMat.color.setHex(0x00f0ff);
+            }
+
+            d.rotors.forEach((blade) => {
+              blade.rotation.y += 24 * dt;
+            });
+          });
+        }
+
+        // 5. Update Smooth Follow Camera
+        const camX = charX + Math.sin(camYaw) * Math.cos(camPitch) * camDist;
+        const camZ = charZ + Math.cos(camYaw) * Math.cos(camPitch) * camDist;
+        const rawCamY = groundY + Math.sin(camPitch) * camDist + 1.4;
+        const minGroundClearance = getTerrainHeight(camX, camZ) + 1.4;
+        const camY = Math.max(rawCamY, minGroundClearance);
+
+        camera.position.lerp(new THREE.Vector3(camX, camY, camZ), 0.14);
+        camera.lookAt(charX, groundY + 1.35, charZ);
+
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      window.onload = function () {
+        lastTime = performance.now();
+        animate(lastTime);
+      };
+    })();
+  </script>
+</body>
+</html>
