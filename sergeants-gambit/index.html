@@ -278,6 +278,109 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
 .overlay h2 { margin: 0; font: 700 22px/1.1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; }
 .overlay p { margin: 0; color: var(--ink-2); }
 
+
+/* ---------- modes + optimizer panel ---------- */
+.modes { display: grid; grid-template-columns: 1fr 1fr auto; gap: 4px; padding: 3px; border-radius: 10px; background: var(--raised); border: 1px solid var(--line); }
+.modes button { border: 0; background: transparent; border-radius: 7px; min-height: 34px; padding: 0 12px; font: 600 12px/1 var(--f-display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
+.modes button[aria-pressed="true"] { background: var(--brass); color: var(--brass-ink); }
+.modes #modeLearn { color: var(--squad-hi); }
+.opt-body, .opt-foot { display: none; }
+body[data-mode="opt"] .opt-body { display: flex; }
+body[data-mode="opt"] .opt-foot { display: flex; flex-direction: column; gap: 8px; }
+body[data-mode="opt"] #panelBody, body[data-mode="opt"] .tabs, body[data-mode="opt"] .presets, body[data-mode="opt"] .plan-foot { display: none; }
+.plan-foot { display: flex; flex-direction: column; gap: 8px; }
+.linkbtn { border: 0; background: none; padding: 0; font: 600 12px/1.2 var(--f-body); color: var(--squad-hi); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.ctl-head .linkbtn { margin-left: auto; }
+.refv { color: var(--ink-3); font-style: italic; }
+.lockchips button { padding: 6px 9px; font-size: 11.5px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* ---------- search screen ---------- */
+.search { position: fixed; z-index: 35; left: 0; top: 0; bottom: 0; width: min(780px, 64vw); overflow-y: auto; background: var(--glass); border-right: 1px solid var(--line); padding: calc(var(--top) + 18px) 20px calc(var(--bot) + 24px) var(--gut-l); overscroll-behavior: contain; }
+.srch { display: flex; flex-direction: column; gap: 12px; }
+.srch-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.srch-head h2 { margin: 6px 0 0; font: 700 clamp(22px, 3.4vw, 32px)/1.05 var(--f-display); letter-spacing: 0.02em; }
+.srch-btns { display: flex; gap: 8px; }
+.search .prog { position: relative; height: 8px; border-radius: 4px; background: rgba(150, 178, 212, 0.15); overflow: hidden; }
+.search .prog i { position: absolute; top: 0; bottom: 0; left: 0; width: 0; transition: width .2s; }
+.srch-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 500 12.5px/1.3 var(--f-mono); color: var(--ink-3); }
+.srch-stats b { color: var(--ink); font-weight: 600; }
+.search .chart canvas { height: 220px; }
+.srch-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; }
+.chart.map canvas { height: 300px; touch-action: pan-y; }
+.mapctl { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 6px; align-items: center; margin-bottom: 8px; }
+.mapctl select { min-height: 34px; padding: 4px 28px 4px 8px; font-size: 12.5px; }
+.mapctl span { color: var(--ink-3); }
+.mapctl .iconbtn { min-height: 34px; padding: 0 10px; }
+.srch-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.coach p, .tips p { margin: 0 0 6px; padding: 10px 12px; border-radius: 10px; background: rgba(33, 160, 174, 0.1); border: 1px solid rgba(79, 213, 224, 0.25); font-size: 13.5px; color: var(--ink); }
+.coach .label, .tips .label { color: var(--squad-hi); margin-right: 6px; }
+.loghead { margin: 4px 0 0; font: 600 13px/1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.slog { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; max-height: 300px; overflow-y: auto; }
+.slog li { font: 500 12.5px/1.35 var(--f-body); padding: 6px 9px; border-radius: 6px; background: rgba(8, 12, 19, 0.6); border-left: 2px solid var(--brass); color: var(--ink-2); }
+.besttag { position: fixed; z-index: 34; right: var(--gut-r); bottom: calc(var(--bot) + 16px); display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border-radius: var(--r); background: var(--glass); border: 1px solid var(--line); max-width: min(340px, calc(36vw - 32px)); pointer-events: none; }
+.besttag:empty { display: none; }
+.besttag b { font: 600 15px/1.2 var(--f-display); }
+.besttag small { font: 500 12px/1.3 var(--f-mono); color: var(--ink-2); }
+body[data-state="search"] .hud-top, body[data-state="optresults"] .hud-top, body[data-state="search"] .scen, body[data-state="optresults"] .scen,
+body[data-state="search"] #minimap, body[data-state="optresults"] #minimap, body[data-state="search"] .feed, body[data-state="optresults"] .feed { display: none; }
+
+/* ---------- search report ---------- */
+.optres .card.wide { grid-column: span 2; }
+.optres .card.pass { border-color: rgba(70, 201, 133, 0.5); } .optres .card.pass b { color: var(--good); }
+.optres .card.fail b { color: var(--warn); }
+.optres .charts { grid-template-columns: 1fr 1fr; }
+.optres .chart.wide canvas { height: 240px; }
+.optres tr.hl0 td { color: var(--ink); background: rgba(232, 177, 58, 0.08); }
+.optres tr.hl1 td { color: var(--ink); background: rgba(79, 213, 224, 0.08); }
+.optres td.wrap { white-space: normal; min-width: 220px; }
+.optres td.wrap { white-space: normal; }
+.plangrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px 16px; }
+.plangrid div { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; }
+.tips p { background: rgba(232, 177, 58, 0.08); border-color: rgba(232, 177, 58, 0.3); }
+.tips .label { color: var(--brass); }
+
+/* ---------- history dialog ---------- */
+.overlay.hist { place-items: start center; overflow-y: auto; }
+.overlay.hist .dlg { max-width: 920px; width: 100%; display: block; text-align: left; padding: 18px; border-radius: 14px; background: var(--glass-2); border: 1px solid var(--line-2); margin-top: calc(var(--top) + 24px); }
+.dlg-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+.dlg-head h2 { font-size: 20px; }
+
+/* ---------- learn ---------- */
+.learn { position: fixed; inset: 0; z-index: 50; overflow: hidden; background: #05080d; padding: calc(var(--top) + 18px) var(--gut-r) calc(var(--bot) + 12px) var(--gut-l); }
+.learn-wrap { max-width: 1120px; height: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.learn-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
+.learn-head h2 { margin: 6px 0 0; font: 700 clamp(22px, 3.6vw, 34px)/1.05 var(--f-display); }
+.learn-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 18px; }
+.learn-body > * { min-width: 0; }
+.lcard { overflow-wrap: anywhere; }
+.learn-nav { overflow-y: auto; display: flex; flex-direction: column; gap: 2px; padding-right: 6px; }
+.learn-nav button { text-align: left; border: 0; background: transparent; padding: 7px 10px; border-radius: 7px; font: 500 13.5px/1.25 var(--f-body); color: var(--ink-2); }
+.learn-nav button[aria-current="true"] { background: var(--brass-dim); color: var(--brass); }
+.learn-main { overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 40px; scroll-behavior: smooth; }
+.lsec { margin: 10px 0 0; font: 600 12px/1 var(--f-display); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+.lcard { padding: 18px 20px; border-radius: 12px; background: rgba(17, 26, 40, 0.86); border: 1px solid var(--line); max-width: 760px; }
+.lcard h3 { margin: 0 0 8px; font: 700 20px/1.15 var(--f-display); letter-spacing: 0.02em; }
+.lcard h4 { margin: 14px 0 4px; font: 600 13px/1.2 var(--f-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--brass); }
+.lcard p, .lcard li, .lcard dd { font-size: 15px; line-height: 1.55; color: var(--ink-2); }
+.lcard p { margin: 0 0 8px; }
+.lcard b { color: var(--ink); }
+.lcard .pic { font-size: 15.5px; color: var(--ink); font-style: italic; border-left: 3px solid var(--brass); padding-left: 12px; }
+.lcard .ex { padding: 10px 12px; border-radius: 8px; background: rgba(33, 160, 174, 0.1); color: var(--ink); }
+.lcard .ex .label { color: var(--squad-hi); margin-right: 6px; }
+.lcard .ex.bench { background: rgba(232, 177, 58, 0.08); }
+.lcard .ex.bench .label { color: var(--brass); }
+.lcard ol, .lcard ul { margin: 0 0 8px; padding-left: 22px; }
+.lset { display: flex; flex-direction: column; gap: 10px; }
+.lset > div { padding: 10px 12px; border-radius: 8px; background: rgba(22, 33, 47, 0.7); border: 1px solid var(--line); }
+.lset p { margin: 4px 0 0; font-size: 14px; }
+.updown { font: 600 12px/1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); }
+.lsvg svg { width: 100%; height: auto; display: block; margin: 6px 0 12px; }
+.lcard dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 0; }
+.lcard dt { font: 600 14px/1.5 var(--f-display); color: var(--ink); }
+.lcard dd { margin: 0; }
+.lcard .btn { margin-top: 6px; }
+
 /* ---------- phones ---------- */
 @media (max-width: 899px) {
   :root { --panel-w: 100vw; }
@@ -309,6 +412,23 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
   .charts, .tables { grid-template-columns: 1fr; }
   .controls button { padding: 0 9px; }
   .controls .lbl-wide { display: none; }
+  .search { width: auto; right: 0; top: auto; height: min(74vh, 720px); border-right: 0; border-top: 1px solid var(--line-2); border-radius: 18px 18px 0 0; padding: 16px var(--gut-r) calc(var(--bot) + 20px) var(--gut-l); }
+  .srch-grid { grid-template-columns: 1fr; }
+  .besttag { top: calc(var(--top) + 10px); bottom: auto; left: var(--gut-l); right: var(--gut-r); max-width: none; }
+  .search .chart canvas { height: 190px; }
+  .chart.map canvas { height: 280px; }
+  .optres .card.wide { grid-column: 1 / -1; }
+  .optres .charts, .optres .tables { grid-template-columns: 1fr; }
+  .learn { overflow-y: auto; }
+  .learn-wrap { height: auto; }
+  .learn-body { grid-template-columns: minmax(0, 1fr); }
+  .learn-nav { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; position: sticky; top: 0; background: #05080d; z-index: 1; }
+  .learn-nav button { flex: 0 0 auto; white-space: nowrap; }
+  .learn-main { overflow: visible; }
+  .lcard { padding: 16px; }
+  .lcard dl { grid-template-columns: 1fr; gap: 2px; }
+  .lcard dd { margin-bottom: 8px; }
+  .modes button { padding: 0 8px; letter-spacing: 0.06em; }
 }
 @media (max-width: 420px) {
   .bar { width: 56px; }
@@ -349,11 +469,23 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
   <div class="panel-head">
     <h1>Sergeant's <span>Gambit</span></h1>
     <p>Set the doctrine for 10 soldiers and their sergeant against a 20-drone swarm, then watch the plan play out across many battles.</p>
+    <div class="modes" id="modes" role="group" aria-label="Mode"><button data-mode="plan" aria-pressed="true">Plan by hand</button><button data-mode="opt" aria-pressed="false">Optimize</button><button id="modeLearn">Learn</button></div>
     <div class="presets" id="presets" role="group" aria-label="Presets"></div>
   </div>
   <div class="tabs" id="tabs" role="tablist"></div>
   <div class="panel-body" id="panelBody"></div>
+  <div class="panel-body opt-body" id="optBody"></div>
   <div class="panel-foot">
+    <div class="opt-foot">
+      <button class="deploy" id="optStart">Start search<small id="optStartSub"></small></button>
+      <div class="foot-links"><button id="optLoad">Load run code</button><button id="optHistory">History</button></div>
+      <div class="sharebox" id="runbox" hidden>
+        <label class="label" for="runText">Paste a run code</label>
+        <textarea id="runText" spellcheck="false"></textarea>
+        <div class="foot-links"><button id="runAction">Load</button><button id="runClose">Close</button></div>
+      </div>
+    </div>
+    <div class="plan-foot">
     <button class="deploy" id="deploy">Deploy<small id="deploySub">50 battles</small></button>
     <div class="foot-links">
       <button id="btnShare">Share setup</button>
@@ -364,6 +496,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
       <label class="label" for="shareText" id="shareLabel">Setup code</label>
       <textarea id="shareText" spellcheck="false"></textarea>
       <div class="foot-links"><button id="shareAction">Copy</button><button id="shareClose">Close</button></div>
+    </div>
     </div>
   </div>
 </aside>
@@ -391,11 +524,16 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
 </section>
 
 <section class="debrief" id="debrief" hidden aria-label="After-action report"></section>
+<section class="search" id="search" hidden aria-label="Search in progress"></section>
+<div class="besttag" id="besttag" hidden aria-live="polite"></div>
+<section class="debrief optres" id="optres" hidden aria-label="Search report"></section>
+<section class="learn" id="learn" hidden aria-label="Learn"></section>
+<div class="overlay hist" id="hist" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 <div class="overlay" id="ctxLost" hidden><div><h2>Graphics paused</h2><p>The browser reset the 3D view. Tap to restore it; the simulation keeps its place.</p><button class="btn primary" id="ctxBtn">Restore view</button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
+<script id="sg-sim">
 /* =========================================================================
    Sergeant's Gambit: Swarm Siege — SIMULATION CORE
    Pure and seeded: no DOM, no THREE, no Math.random. Same seed + settings
@@ -2050,6 +2188,1110 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
+<script id="sg-opt">
+/* =========================================================================
+   Sergeant's Gambit — OPTIMIZER ENGINE
+   Pure and seeded, like the simulation: no DOM, no Math.random. Every method
+   is an ask/tell object; the driver scores the plans it asks for on shared
+   training battles, so the same run code always gives the same search.
+   ========================================================================= */
+(function (root) {
+  'use strict';
+  const S = root.SGSim || (typeof require === 'function' ? require('./sim.js') : null);
+  const W = S.WEAPON_ORDER;
+  const ROLE_KEYS = ['interceptor', 'spotter', 'decoy'];
+  const TYPES = ['fpv', 'bomber', 'gunship'];
+  const TYPE_NAME = { fpv: 'FPV', bomber: 'Bomber', gunship: 'Gunship' };
+  const ROLE_NAME = { interceptor: 'interceptor', spotter: 'spotter', decoy: 'decoy' };
+  const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+  const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+  // -------------------------------------------------------------------------
+  // THE KNOBS — the 18 doctrine setting groups a search may change
+  // -------------------------------------------------------------------------
+  const KNOBS = [
+    { id: 'formation', label: 'Formation', type: 'cat', key: 'formation', opts: S.CHOICES.formation, names: { ring: 'Ring', line: 'Line', wedge: 'Wedge', teams: 'Two fire teams', dispersed: 'Dispersed' } },
+    { id: 'spacing', label: 'Spacing', type: 'num', key: 'spacing', min: 2, max: 12, step: 0.5, move: 1, unit: ' m', dec: 1 },
+    { id: 'coverDiscipline', label: 'Cover discipline', type: 'num', key: 'coverDiscipline', min: 0, max: 100, step: 1, move: 10, unit: '%', dec: 0 },
+    { id: 'movement', label: 'Movement', type: 'cat', key: 'movement', opts: S.CHOICES.movement, names: { hold: 'Hold', withdraw: 'Withdraw', high: 'High ground' } },
+    { id: 'buddyRevive', label: 'Buddy revive', type: 'bool', key: 'buddyRevive' },
+    { id: 'loadout', label: 'Loadout', type: 'loadout' },
+    { id: 'sergeantWeapon', label: "Sergeant's weapon", type: 'cat', key: 'sergeantWeapon', opts: S.CHOICES.sergeantWeapon, names: { ar: 'Rifle', dmr: 'Marksman', shotgun: 'Shotgun' } },
+    { id: 'ammoLoad', label: 'Ammo load', type: 'num', key: 'ammoLoad', min: 0.5, max: 2, step: 0.25, move: 0.25, unit: '×', dec: 2 },
+    { id: 'friendlyPct', label: 'Friendly drone budget', type: 'num', key: 'friendlyPct', min: 0, max: 20, step: 1, move: 5, unit: '%', dec: 0 },
+    { id: 'roles', label: 'Drone roles', type: 'roles' },
+    { id: 'emp', label: 'EMP', type: 'emp' },
+    { id: 'engageRange', label: 'Engagement range', type: 'num', key: 'engageRange', min: 30, max: 100, step: 1, move: 10, unit: '%', dec: 0 },
+    { id: 'fireDiscipline', label: 'Fire discipline', type: 'cat', key: 'fireDiscipline', opts: S.CHOICES.fireDiscipline, names: { focus: 'Focus', nearest: 'Nearest', priority: 'Priority' } },
+    { id: 'priority', label: 'Target priority', type: 'perm' },
+    { id: 'staggerReload', label: 'Staggered reloads', type: 'bool', key: 'staggerReload' },
+    { id: 'retreatThreshold', label: 'Retreat threshold', type: 'num', key: 'retreatThreshold', min: 0, max: 80, step: 1, move: 10, unit: '%', dec: 0 },
+    { id: 'caveDoctrine', label: 'Cave doctrine', type: 'cat', key: 'caveDoctrine', opts: S.CHOICES.caveDoctrine, names: { never: 'Never', wounded: 'Wounded only', fallback: 'Fall back', garrison: 'Garrison' } },
+    { id: 'holdFireCanopy', label: 'Hold fire under canopy', type: 'bool', key: 'holdFireCanopy' }
+  ];
+  const DIMS = { cat: 1, num: 1, bool: 1, loadout: 6, roles: 4, emp: 2, perm: 3 };
+  let off = 0;
+  for (const k of KNOBS) { k.dims = DIMS[k.type]; k.off = off; off += k.dims; }
+  const D_ALL = off;
+  const KNOB = {}; for (const k of KNOBS) KNOB[k.id] = k;
+  const MAP_KNOBS = KNOBS.filter((k) => k.type === 'num');
+  const LOCK_SETS = {
+    all: [],
+    squad: ['loadout', 'sergeantWeapon', 'ammoLoad', 'friendlyPct', 'roles', 'emp'],
+    loadout: ['formation', 'spacing', 'coverDiscipline', 'movement', 'buddyRevive', 'engageRange', 'fireDiscipline', 'priority', 'staggerReload', 'retreatThreshold', 'caveDoctrine', 'holdFireCanopy']
+  };
+
+  function budgetOf(p) { return S.friendlyBudget(p); }
+  function weaponName(w) { return S.W[w].name; }
+
+  function apportion(total, w) {
+    const n = w.length, out = new Array(n).fill(0);
+    if (total <= 0) return out;
+    let s = 0; for (const v of w) s += Math.max(0, v);
+    const share = w.map((v) => (s > 0 ? Math.max(0, v) / s * total : total / n));
+    let used = 0; const rem = [];
+    for (let i = 0; i < n; i++) { const f = Math.floor(share[i] + 1e-9); out[i] = f; used += f; rem.push([share[i] - f, i]); }
+    rem.sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+    for (let k = 0; used < total; k++) { out[rem[k % n][1]]++; used++; }
+    return out;
+  }
+  function snapNum(k, v) { v = clamp(v, k.min, k.max); return +(Math.round((v - k.min) / k.step) * k.step + k.min).toFixed(3); }
+
+  function groupValue(p, k) {
+    switch (k.type) {
+      case 'loadout': return W.map((w) => p.loadout[w]);
+      case 'roles': return ROLE_KEYS.map((r) => p.roles[r]);
+      case 'emp': return [p.empCharges, p.empTrigger];
+      case 'perm': return p.priority.slice();
+      default: return p[k.key];
+    }
+  }
+  function planKey(p) { return JSON.stringify(KNOBS.map((k) => groupValue(p, k))); }
+
+  function fmtValue(k, v) {
+    switch (k.type) {
+      case 'num': return Number(v).toFixed(k.dec) + k.unit;
+      case 'cat': return k.names[v] || String(v);
+      case 'bool': return v ? 'On' : 'Off';
+      case 'loadout': return W.map((w, i) => (v[i] ? v[i] + ' ' + weaponName(w) : '')).filter(Boolean).join(', ');
+      case 'roles': { const s = ROLE_KEYS.map((r, i) => (v[i] ? v[i] + ' ' + ROLE_NAME[r] + (v[i] > 1 ? 's' : '') : '')).filter(Boolean).join(', '); return s || 'None'; }
+      case 'emp': return v[0] === 0 ? 'No charges' : v[0] + (v[0] === 1 ? ' charge' : ' charges') + ' at ' + v[1] + ' drones';
+      case 'perm': return v.map((t) => TYPE_NAME[t]).join(' > ');
+    }
+    return String(v);
+  }
+  function describePlan(p) { return KNOBS.map((k) => ({ id: k.id, label: k.label, value: fmtValue(k, groupValue(p, k)) })); }
+  function diffPlans(a, b) {
+    const out = [];
+    for (const k of KNOBS) {
+      const va = groupValue(a, k), vb = groupValue(b, k);
+      if (JSON.stringify(va) !== JSON.stringify(vb)) out.push({ id: k.id, label: k.label, from: fmtValue(k, va), to: fmtValue(k, vb) });
+    }
+    return out;
+  }
+
+  // -------------------------------------------------------------------------
+  // ENCODING — every plan as a list of numbers in [0, 1]
+  // -------------------------------------------------------------------------
+  function encodeKnob(p, k, x) {
+    const o = k.off;
+    switch (k.type) {
+      case 'num': x[o] = (p[k.key] - k.min) / (k.max - k.min); break;
+      case 'cat': x[o] = (k.opts.indexOf(p[k.key]) + 0.5) / k.opts.length; break;
+      case 'bool': x[o] = p[k.key] ? 0.75 : 0.25; break;
+      case 'loadout': W.forEach((w, i) => { x[o + i] = p.loadout[w] / 10; }); break;
+      case 'roles': {
+        const B = budgetOf(p);
+        if (B <= 0) { for (let i = 0; i < 4; i++) x[o + i] = 0.25; break; }
+        const used = ROLE_KEYS.reduce((a, r) => a + p.roles[r], 0);
+        ROLE_KEYS.forEach((r, i) => { x[o + i] = p.roles[r] / B; }); x[o + 3] = (B - used) / B; break;
+      }
+      case 'emp': x[o] = p.empCharges / 3; x[o + 1] = (p.empTrigger - 2) / 8; break;
+      case 'perm': p.priority.forEach((t, rank) => { x[o + TYPES.indexOf(t)] = (rank + 0.5) / 3; }); break;
+    }
+  }
+  function encodePlan(p) { const x = new Array(D_ALL).fill(0.5); for (const k of KNOBS) encodeKnob(p, k, x); return x; }
+  function decodeKnob(p, k, x) {
+    const o = k.off;
+    switch (k.type) {
+      case 'num': p[k.key] = snapNum(k, k.min + clamp01(x[o]) * (k.max - k.min)); break;
+      case 'cat': p[k.key] = k.opts[Math.min(k.opts.length - 1, Math.floor(clamp01(x[o]) * k.opts.length))]; break;
+      case 'bool': p[k.key] = x[o] >= 0.5; break;
+      case 'loadout': { const c = apportion(10, W.map((w, i) => clamp01(x[o + i]))); W.forEach((w, i) => { p.loadout[w] = c[i]; }); break; }
+      case 'roles': { const B = budgetOf(p); const c = apportion(B, [0, 1, 2, 3].map((i) => clamp01(x[o + i]))); ROLE_KEYS.forEach((r, i) => { p.roles[r] = c[i]; }); break; }
+      case 'emp': p.empCharges = Math.min(3, Math.floor(clamp01(x[o]) * 3 + 0.5)); p.empTrigger = 2 + Math.min(8, Math.floor(clamp01(x[o + 1]) * 8 + 0.5)); break;
+      case 'perm': { const idx = [0, 1, 2].sort((a, b) => x[o + a] - x[o + b] || a - b); p.priority = idx.map((i) => TYPES[i]); break; }
+    }
+  }
+  // decode a full vector onto base; only knobs in `free` change
+  function decodePlan(x, base, free) {
+    const p = S.deepClone(base);
+    for (const k of KNOBS) if (free.has(k.id)) decodeKnob(p, k, x);
+    return S.normalize(p);
+  }
+
+  // -------------------------------------------------------------------------
+  // MOVES — one setting at a time, for the local methods and mutation
+  // -------------------------------------------------------------------------
+  function pickR(rng, a) { return a[Math.floor(rng.next() * a.length)]; }
+  function moveKnob(p0, k, rng) {
+    const p = S.deepClone(p0); let desc = '';
+    switch (k.type) {
+      case 'num': {
+        const d = rng.next() < 0.5 ? -k.move : k.move;
+        let v = p[k.key] + d; if (v < k.min - 1e-9 || v > k.max + 1e-9) v = p[k.key] - d;
+        v = snapNum(k, v); if (v === p[k.key]) return null;
+        desc = `${k.label} ${fmtValue(k, p[k.key])} → ${fmtValue(k, v)}`; p[k.key] = v; break;
+      }
+      case 'cat': { const v = pickR(rng, k.opts.filter((o) => o !== p[k.key])); desc = `${k.label}: ${k.names[p[k.key]]} → ${k.names[v]}`; p[k.key] = v; break; }
+      case 'bool': p[k.key] = !p[k.key]; desc = `${k.label} ${p[k.key] ? 'on' : 'off'}`; break;
+      case 'loadout': {
+        const f = pickR(rng, W.filter((w) => p.loadout[w] > 0)), t = pickR(rng, W.filter((w) => w !== f));
+        p.loadout[f]--; p.loadout[t]++; desc = `Moved one soldier from ${weaponName(f)} to ${weaponName(t)}`; break;
+      }
+      case 'roles': {
+        const B = budgetOf(p); if (B <= 0) return null;
+        const v = { interceptor: p.roles.interceptor, spotter: p.roles.spotter, decoy: p.roles.decoy };
+        v.unused = B - ROLE_KEYS.reduce((a, r) => a + v[r], 0);
+        const keys = ['interceptor', 'spotter', 'decoy', 'unused'];
+        const f = pickR(rng, keys.filter((r) => v[r] > 0)), t = pickR(rng, keys.filter((r) => r !== f));
+        v[f]--; v[t]++; ROLE_KEYS.forEach((r) => { p.roles[r] = v[r]; });
+        desc = f === 'unused' ? `Added a ${ROLE_NAME[t]} drone` : t === 'unused' ? `Grounded a ${ROLE_NAME[f]} drone` : `Switched a ${ROLE_NAME[f]} drone to ${ROLE_NAME[t]}`; break;
+      }
+      case 'emp': {
+        if (rng.next() < 0.5) { const c = clamp(p.empCharges + (rng.next() < 0.5 ? -1 : 1), 0, 3); if (c === p.empCharges) return null; desc = `EMP charges ${p.empCharges} → ${c}`; p.empCharges = c; }
+        else { const t = clamp(p.empTrigger + (rng.next() < 0.5 ? -1 : 1), 2, 10); if (t === p.empTrigger) return null; desc = `EMP trigger ${p.empTrigger} → ${t} drones`; p.empTrigger = t; }
+        break;
+      }
+      case 'perm': { const i = rng.next() < 0.5 ? 0 : 1; const a = p.priority; [a[i], a[i + 1]] = [a[i + 1], a[i]]; desc = `Priority: ${a.map((t) => TYPE_NAME[t]).join(' > ')}`; break; }
+    }
+    return { plan: S.normalize(p), desc };
+  }
+  function neighbor(p, freeKnobs, rng) {
+    const key0 = planKey(p);
+    for (let tries = 0; tries < 60; tries++) {
+      const k = pickR(rng, freeKnobs);
+      const m = moveKnob(p, k, rng); if (!m) continue;
+      if (planKey(m.plan) === key0) continue;
+      return { plan: m.plan, desc: m.desc, g: k.id, from: k.id + '=' + JSON.stringify(groupValue(p, k)), to: k.id + '=' + JSON.stringify(groupValue(m.plan, k)) };
+    }
+    return null;
+  }
+  function randomKnobValue(p, k, rng) {
+    const x = encodePlan(p);
+    for (let i = 0; i < k.dims; i++) x[k.off + i] = rng.next();
+    const q = S.deepClone(p); decodeKnob(q, k, x); return S.normalize(q);
+  }
+
+  // -------------------------------------------------------------------------
+  // OBJECTIVES — scoring a plan from its battle results
+  // -------------------------------------------------------------------------
+  const OBJECTIVES = {
+    win: { name: 'Win rate', short: 'Share of training battles won.' },
+    margin: { name: 'Win rate + margin', short: 'Wins count most; near-misses and big wins count a little, so scores change smoothly.' },
+    worst: { name: 'Worst battlefield', short: 'The lowest win rate on any terrain type, so the plan never collapses.' }
+  };
+  function compact(r, droneCount) { return { w: r.winner === 'troops' ? 1 : 0, h: r.humansLeft, d: r.dronesLeft, n: droneCount, t: r.scenario.terrain }; }
+  function scoreResults(obj, res) {
+    const n = res.length; if (!n) return 0;
+    if (obj === 'margin') { let s = 0; for (const r of res) s += r.w ? 0.7 + 0.3 * r.h / 11 : 0.3 * (1 - r.d / r.n); return s / n; }
+    if (obj === 'worst') {
+      const g = {}; for (const r of res) { const a = g[r.t] || (g[r.t] = [0, 0]); a[0] += r.w; a[1]++; }
+      let worst = null; for (const t of Object.keys(g)) if (g[t][1] >= 3) { const p = g[t][0] / g[t][1]; if (worst == null || p < worst) worst = p; }
+      if (worst != null) return worst;
+    }
+    let w = 0; for (const r of res) w += r.w; return w / n;
+  }
+  function winRate(res) { let w = 0; for (const r of res) w += r.w; return res.length ? w / res.length : 0; }
+  function freshSeed(seed) { return (S.hash32(seed >>> 0, 0xc4ec) >>> 0) || 1; }
+
+  // -------------------------------------------------------------------------
+  // METHODS
+  // -------------------------------------------------------------------------
+  function gauss(rng) { let u = 0; while (u <= 1e-12) u = rng.next(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng.next()); }
+
+  const P = (k, label, min, max, step, std, hint, extra) => Object.assign({ k, label, min, max, step, std, hint }, extra || {});
+  const METHODS = {};
+
+  METHODS.random = {
+    name: 'Random search', short: 'Throw darts: try random plans and keep the best.', card: 'random',
+    params: [P('batch', 'Plans per round', 5, 40, 1, 10, 'How many random plans to try before reporting progress. It does not change how good the search is.')],
+    presets: null,
+    create(ctx, p) {
+      let first = true;
+      return {
+        ask() { const out = []; if (first && ctx.startMode === 'plan') out.push({ plan: ctx.startPlan, meta: { desc: 'Your plan' } }); first = false; while (out.length < p.batch) out.push({ plan: ctx.randomPlan(), meta: { desc: 'Random plan' } }); return out; },
+        tell() {}, stats() { return {}; }
+      };
+    }
+  };
+
+  function hillCreate(ctx, p) {
+    let cur = null, stale = 0, restart = false;
+    const optima = []; let restarts = 0;
+    return {
+      ask() {
+        if (!cur) return [{ plan: ctx.startMode === 'plan' ? ctx.startPlan : ctx.randomPlan(), meta: { desc: ctx.startMode === 'plan' ? 'Start: your plan' : 'Start: a random plan', start: true } }];
+        if (restart) return [{ plan: ctx.randomPlan(), meta: { desc: 'Restart from a random plan', restart: true } }];
+        const out = [], seen = new Set();
+        for (let i = 0; i < p.k * 3 && out.length < p.k; i++) {
+          const nb = ctx.neighbor(cur.plan); if (!nb) break;
+          const key = planKey(nb.plan); if (seen.has(key)) continue; seen.add(key);
+          out.push({ plan: nb.plan, meta: { desc: nb.desc } });
+        }
+        return out;
+      },
+      tell(c) {
+        if (!cur || restart) { if (restart) restarts++; cur = c[0]; c[0].accepted = true; stale = 0; restart = false; return; }
+        let b = c[0]; for (const x of c) if (x.score > b.score) b = x;
+        if (b.score > cur.score) { cur = b; b.accepted = true; stale = 0; }
+        else {
+          if (p.ties && b.score === cur.score && b.key !== cur.key) { cur = b; b.accepted = true; }
+          stale += c.length;
+        }
+        if (p.restarts && stale >= p.patience) { optima.push({ key: cur.key, score: cur.score }); restart = true; }
+      },
+      stats() { return { current: cur ? cur.score : null, stale, restarts, optima: optima.length }; }
+    };
+  }
+  METHODS.hill = {
+    name: 'Hill climb', short: 'Change one setting; keep the change if the score goes up.', card: 'hill',
+    params: [
+      P('k', 'Tries per step', 1, 16, 1, 1, '1 takes the first improvement it finds. Higher tries several changes and takes the best (steepest climb).'),
+      P('patience', 'Restart after (tries without gain)', 5, 100, 1, 25, 'How long to keep trying from one plan before giving up on it.'),
+      P('restarts', 'Restart from a random plan when stuck', 0, 1, 1, 1, 'Off: keeps poking at the same hilltop. On: jumps somewhere new.', { bool: true }),
+      P('ties', 'Accept equal scores', 0, 1, 1, 1, 'Lets the climber walk across flat ground instead of stopping at the first plateau.', { bool: true })
+    ],
+    presets: { careful: { k: 1, patience: 40, restarts: 0, ties: 1 }, standard: { k: 1, patience: 25, restarts: 1, ties: 1 }, bold: { k: 4, patience: 12, restarts: 1, ties: 1 } },
+    create: hillCreate
+  };
+  METHODS.steep = {
+    name: 'Steepest climb + restarts', short: 'Test many nearby changes before each move; restart from random plans when stuck.', card: 'steep',
+    params: [
+      P('k', 'Tries per step', 4, 24, 1, 12, 'Nearby plans tested before each move. More = surer steps, fewer steps.'),
+      P('patience', 'Restart after (tries without gain)', 4, 100, 1, 24, 'With 12 tries per step, 24 means two steps without gain.')
+    ],
+    presets: { careful: { k: 8, patience: 40 }, standard: { k: 12, patience: 24 }, bold: { k: 16, patience: 16 } },
+    create(ctx, p) { return hillCreate(ctx, { k: p.k, patience: p.patience, restarts: 1, ties: 0 }); }
+  };
+
+  METHODS.anneal = {
+    name: 'Simulated annealing', short: 'Like hill climb, but early on it sometimes accepts a worse plan, less often as it cools.', card: 'anneal',
+    params: [
+      P('t0', 'Start temperature (points)', 0.5, 20, 0.5, 6, 'How big a drop in score it will accept early on. 6 means a 6-point drop is accepted about 1 time in 3.'),
+      P('t1', 'End temperature (points)', 0.05, 5, 0.05, 0.3, 'How fussy it is at the end. Small = behaves like a hill climb when the budget runs out.')
+    ],
+    presets: { careful: { t0: 2, t1: 0.2 }, standard: { t0: 6, t1: 0.3 }, bold: { t0: 12, t1: 0.5 } },
+    create(ctx, p) {
+      let cur = null, worse = 0, worseEarly = 0, worseLate = 0, tried = 0;
+      const temp = () => p.t0 * Math.pow(p.t1 / p.t0, Math.min(1, ctx.spentFrac()));
+      return {
+        ask() {
+          if (!cur) return [{ plan: ctx.startMode === 'plan' ? ctx.startPlan : ctx.randomPlan(), meta: { desc: 'Start', start: true } }];
+          const nb = ctx.neighbor(cur.plan); return nb ? [{ plan: nb.plan, meta: { desc: nb.desc, temp: temp() } }] : [];
+        },
+        tell(c) {
+          const x = c[0]; if (!cur) { cur = x; x.accepted = true; return; }
+          tried++;
+          const d = (x.score - cur.score) * 100, T = temp();
+          if (d >= 0 || ctx.rng.next() < Math.exp(d / T)) {
+            if (d < 0) { worse++; x.worse = true; if (ctx.spentFrac() < 0.25) worseEarly++; else if (ctx.spentFrac() > 0.75) worseLate++; }
+            cur = x; x.accepted = true;
+          }
+        },
+        stats() { return { current: cur ? cur.score : null, temp: temp(), worse, worseEarly, worseLate, tried }; }
+      };
+    }
+  };
+
+  METHODS.tabu = {
+    name: 'Tabu search', short: 'Look at several changes, always take the best, and forbid undoing recent moves.', card: 'tabu',
+    params: [
+      P('k', 'Tries per step', 3, 20, 1, 8, 'Nearby plans looked at before each move.'),
+      P('tenure', 'Tabu list length (moves)', 1, 20, 1, 7, 'How many recent moves stay forbidden. Longer = less going in circles, but fewer options.'),
+      P('aspiration', 'Allow a forbidden move that beats the best ever', 0, 1, 1, 1, 'The usual exception: never pass up a new record.', { bool: true })
+    ],
+    presets: { careful: { k: 5, tenure: 4, aspiration: 1 }, standard: { k: 8, tenure: 7, aspiration: 1 }, bold: { k: 12, tenure: 12, aspiration: 1 } },
+    create(ctx, p) {
+      let cur = null, iter = 0, downhill = 0, aspirated = 0;
+      const tabu = [];
+      const isTabu = (attr) => tabu.some((e) => e.attr === attr && e.until > iter);
+      return {
+        ask() {
+          if (!cur) return [{ plan: ctx.startMode === 'plan' ? ctx.startPlan : ctx.randomPlan(), meta: { desc: 'Start', start: true } }];
+          const out = [], seen = new Set();
+          for (let i = 0; i < p.k * 4 && out.length < p.k; i++) {
+            const nb = ctx.neighbor(cur.plan); if (!nb) break;
+            const key = planKey(nb.plan); if (seen.has(key)) continue; seen.add(key);
+            out.push({ plan: nb.plan, meta: { desc: nb.desc, from: nb.from, to: nb.to } });
+          }
+          return out;
+        },
+        tell(c) {
+          if (!cur) { cur = c[0]; c[0].accepted = true; return; }
+          iter++;
+          const order = c.slice().sort((a, b) => b.score - a.score);
+          let pick = null;
+          for (const x of order) {
+            const forb = isTabu(x.meta.to);
+            if (!forb) { pick = x; break; }
+            if (p.aspiration && x.score > ctx.bestScore()) { pick = x; aspirated++; break; }
+          }
+          if (!pick) pick = order[0];
+          if (pick.score < cur.score) downhill++;
+          tabu.push({ attr: pick.meta.from, until: iter + p.tenure });
+          while (tabu.length > 64) tabu.shift();
+          pick.accepted = true; cur = pick;
+        },
+        stats() { return { current: cur ? cur.score : null, tabu: tabu.filter((e) => e.until > iter).length, downhill, aspirated, iter }; },
+        _isTabu: isTabu, _tabu: tabu, get _iter() { return iter; }
+      };
+    }
+  };
+
+  METHODS.ga = {
+    name: 'Genetic algorithm', short: 'Breed a population: the fitter plans mix their settings and mutate.', card: 'ga',
+    params: [
+      P('pop', 'Population', 6, 60, 1, 20, 'Plans alive at once. Bigger = more variety, slower generations.'),
+      P('elites', 'Elites kept', 0, 6, 1, 2, 'The best plans copied unchanged into the next generation, so the best is never lost.'),
+      P('tour', 'Tournament size', 2, 6, 1, 3, 'Parents are the best of this many random picks. Bigger = the fittest breed more.'),
+      P('cx', 'Crossover', 0, 1, 0.05, 0.8, 'Chance a child mixes two parents instead of copying one.'),
+      P('mut', 'Mutation (per setting)', 0.02, 0.5, 0.01, 0.15, 'Chance each setting of a child is changed at random. Keeps new ideas coming.')
+    ],
+    presets: { careful: { pop: 16, elites: 3, tour: 4, cx: 0.7, mut: 0.08 }, standard: { pop: 20, elites: 2, tour: 3, cx: 0.8, mut: 0.15 }, bold: { pop: 30, elites: 1, tour: 2, cx: 0.9, mut: 0.3 } },
+    create(ctx, p) {
+      let popn = [], gen = 0;
+      const tour = () => { let b = null; for (let i = 0; i < p.tour; i++) { const c = popn[Math.floor(ctx.rng.next() * popn.length)]; if (!b || c.score > b.score) b = c; } return b; };
+      return {
+        ask() {
+          if (gen === 0) {
+            const out = []; if (ctx.startMode === 'plan') out.push({ plan: ctx.startPlan, meta: { desc: 'Your plan', gen } });
+            while (out.length < p.pop) out.push({ plan: ctx.randomPlan(), meta: { desc: 'Random founder', gen } });
+            return out;
+          }
+          const out = [], nKids = Math.max(1, p.pop - Math.min(p.elites, popn.length));
+          while (out.length < nKids) {
+            const a = tour(), b = tour();
+            let child = ctx.rng.next() < p.cx ? ctx.crossover(a.plan, b.plan) : a.plan;
+            child = ctx.mutate(child, p.mut);
+            out.push({ plan: child, meta: { desc: 'Child of generation ' + gen, gen } });
+          }
+          return out;
+        },
+        tell(c) {
+          if (gen === 0) popn = c.slice();
+          else { const el = popn.slice().sort((a, b) => b.score - a.score).slice(0, Math.min(p.elites, popn.length)); popn = el.concat(c); }
+          gen++;
+        },
+        stats() { return { gen, diversity: new Set(popn.map((x) => x.key)).size, pop: popn.length, best: popn.reduce((m, x) => Math.max(m, x.score), 0) }; }
+      };
+    }
+  };
+
+  METHODS.pso = {
+    name: 'Particle swarm', short: 'A flock of plans, each pulled toward its own best and the flock’s best.', card: 'pso',
+    params: [
+      P('n', 'Particles', 4, 40, 1, 12, 'Plans in the flock.'),
+      P('w', 'Inertia', 0.2, 1, 0.01, 0.73, 'How much each particle keeps its speed. High = roams further; low = settles fast.'),
+      P('c1', 'Pull to own best', 0, 3, 0.05, 1.5, 'How strongly a particle returns to the best plan it has seen itself.'),
+      P('c2', 'Pull to flock best', 0, 3, 0.05, 1.5, 'How strongly it is drawn to the best plan any particle has seen.'),
+      P('vmax', 'Top speed', 0.05, 0.6, 0.01, 0.25, 'Biggest change per step, as a share of each setting’s range.')
+    ],
+    presets: { careful: { n: 10, w: 0.5, c1: 1.5, c2: 1.8, vmax: 0.12 }, standard: { n: 12, w: 0.73, c1: 1.5, c2: 1.5, vmax: 0.25 }, bold: { n: 20, w: 0.9, c1: 1.8, c2: 1.2, vmax: 0.4 } },
+    create(ctx, p) {
+      const D = ctx.D, X = [], V = [], PB = [], PBS = [];
+      let GB = null, GBS = -1, it = 0;
+      for (let i = 0; i < p.n; i++) {
+        const x = i === 0 && ctx.startMode === 'plan' ? ctx.encode(ctx.startPlan) : ctx.randomX();
+        X.push(x); V.push(x.map(() => (ctx.rng.next() * 2 - 1) * p.vmax)); PB.push(x.slice()); PBS.push(-1);
+      }
+      const spread = () => { if (!D) return 0; const c = new Array(D).fill(0); for (const x of X) for (let d = 0; d < D; d++) c[d] += x[d] / X.length; let s = 0; for (const x of X) { let q = 0; for (let d = 0; d < D; d++) q += (x[d] - c[d]) ** 2; s += Math.sqrt(q / D); } return s / X.length; };
+      return {
+        ask() { return X.map((x, i) => ({ plan: ctx.decode(x), x: x.slice(), meta: { p: i, it, desc: 'Particle ' + (i + 1) } })); },
+        tell(c) {
+          c.forEach((r, i) => { if (r.score > PBS[i]) { PBS[i] = r.score; PB[i] = X[i].slice(); } if (r.score > GBS) { GBS = r.score; GB = X[i].slice(); } });
+          for (let i = 0; i < X.length; i++) for (let d = 0; d < D; d++) {
+            let v = p.w * V[i][d] + p.c1 * ctx.rng.next() * (PB[i][d] - X[i][d]) + p.c2 * ctx.rng.next() * (GB[d] - X[i][d]);
+            v = clamp(v, -p.vmax, p.vmax);
+            let x = X[i][d] + v; if (x < 0) { x = 0; v = 0; } else if (x > 1) { x = 1; v = 0; }
+            X[i][d] = x; V[i][d] = v;
+          }
+          it++;
+        },
+        stats() { return { it, spread: spread() }; },
+        get positions() { return X; }
+      };
+    }
+  };
+
+  METHODS.de = {
+    name: 'Differential evolution', short: 'Make new plans by adding the difference between two plans to a third.', card: 'de',
+    params: [
+      P('n', 'Population', 6, 40, 1, 15, 'Plans kept at once.'),
+      P('F', 'Step size F', 0.1, 1.5, 0.05, 0.6, 'How far a new plan jumps along the difference between two others.'),
+      P('CR', 'Crossover CR', 0, 1, 0.05, 0.8, 'Share of settings taken from the new jump; the rest stay as they were.')
+    ],
+    presets: { careful: { n: 12, F: 0.4, CR: 0.9 }, standard: { n: 15, F: 0.6, CR: 0.8 }, bold: { n: 24, F: 0.9, CR: 0.5 } },
+    create(ctx, p) {
+      const D = ctx.D, n = Math.max(4, p.n), X = [], FIT = [];
+      for (let i = 0; i < n; i++) X.push(i === 0 && ctx.startMode === 'plan' ? ctx.encode(ctx.startPlan) : ctx.randomX());
+      let gen = 0, replaced = 0;
+      let trials = null;
+      return {
+        ask() {
+          if (gen === 0) return X.map((x, i) => ({ plan: ctx.decode(x), x: x.slice(), meta: { p: i, gen, desc: 'Founder ' + (i + 1) } }));
+          trials = X.map((xi, i) => {
+            const pickOther = (ex) => { let j; do { j = Math.floor(ctx.rng.next() * n); } while (ex.indexOf(j) >= 0); return j; };
+            const a = pickOther([i]), b = pickOther([i, a]), cc = pickOther([i, a, b]);
+            const jr = Math.floor(ctx.rng.next() * D);
+            return xi.map((v, d) => (ctx.rng.next() < p.CR || d === jr ? clamp01(X[a][d] + p.F * (X[b][d] - X[cc][d])) : v));
+          });
+          return trials.map((x, i) => ({ plan: ctx.decode(x), x: x.slice(), meta: { p: i, gen, desc: 'Trial ' + (i + 1) } }));
+        },
+        tell(c) {
+          if (gen === 0) c.forEach((r, i) => { FIT[i] = r.score; });
+          else c.forEach((r, i) => { if (r.score >= FIT[i]) { if (r.score > FIT[i]) replaced++; FIT[i] = r.score; X[i] = trials[i]; } });
+          gen++;
+        },
+        stats() { return { gen, replaced, best: Math.max(...FIT.filter((v) => v != null), 0) }; },
+        get fitness() { return FIT; }
+      };
+    }
+  };
+
+  METHODS.cma = {
+    name: 'CMA-ES (diagonal)', short: 'Sample plans from a cloud that moves toward the winners and stretches along good directions.', card: 'cma',
+    params: [
+      P('sigma', 'Start step', 0.05, 0.8, 0.01, 0.3, 'How wide the first cloud of plans is, as a share of each setting’s range.'),
+      P('lambda', 'Plans per round (0 = automatic)', 0, 40, 1, 0, 'Automatic uses 4 + 3 × ln(settings searched).')
+    ],
+    presets: { careful: { sigma: 0.15, lambda: 0 }, standard: { sigma: 0.3, lambda: 0 }, bold: { sigma: 0.5, lambda: 0 } },
+    create(ctx, p) {
+      const D = Math.max(1, ctx.D);
+      const lam = p.lambda > 0 ? Math.max(4, Math.round(p.lambda)) : 4 + Math.floor(3 * Math.log(D));
+      const mu = Math.floor(lam / 2);
+      let wts = []; for (let i = 0; i < mu; i++) wts.push(Math.log(mu + 0.5) - Math.log(i + 1));
+      const ws = wts.reduce((a, b) => a + b, 0); wts = wts.map((w) => w / ws);
+      const mueff = 1 / wts.reduce((a, w) => a + w * w, 0);
+      const cs = (mueff + 2) / (D + mueff + 5);
+      const ds = 1 + 2 * Math.max(0, Math.sqrt((mueff - 1) / (D + 1)) - 1) + cs;
+      const cc = (4 + mueff / D) / (D + 4 + 2 * mueff / D);
+      let c1 = 2 / ((D + 1.3) ** 2 + mueff);
+      let cmu = Math.min(1 - c1, 2 * (mueff - 2 + 1 / mueff) / ((D + 2) ** 2 + mueff));
+      const sep = (D + 2) / 3; c1 = Math.min(1, c1 * sep); cmu = Math.min(1 - c1, cmu * sep);
+      const chiN = Math.sqrt(D) * (1 - 1 / (4 * D) + 1 / (21 * D * D));
+      let m = ctx.startMode === 'plan' ? ctx.encode(ctx.startPlan) : ctx.randomX();
+      if (!m.length) m = [0.5];
+      let sigma = p.sigma, gen = 0;
+      const C = new Array(D).fill(1), ps = new Array(D).fill(0), pc = new Array(D).fill(0);
+      let samples = null;
+      return {
+        ask() {
+          samples = [];
+          for (let k = 0; k < lam; k++) {
+            const x = new Array(D), y = new Array(D);
+            for (let d = 0; d < D; d++) { const z = gauss(ctx.rng); x[d] = clamp01(m[d] + sigma * Math.sqrt(C[d]) * z); y[d] = (x[d] - m[d]) / sigma; }
+            samples.push({ x, y });
+          }
+          return samples.map((s, i) => ({ plan: ctx.decode(s.x), x: s.x.slice(), meta: { p: i, gen, desc: 'Sample ' + (i + 1) } }));
+        },
+        tell(c) {
+          const idx = c.map((r, i) => i).sort((a, b) => c[b].score - c[a].score || a - b);
+          const yw = new Array(D).fill(0), zw = new Array(D).fill(0);
+          for (let i = 0; i < mu; i++) { const s = samples[idx[i]]; for (let d = 0; d < D; d++) { yw[d] += wts[i] * s.y[d]; zw[d] += wts[i] * s.y[d] / Math.sqrt(C[d]); } }
+          for (let d = 0; d < D; d++) m[d] = clamp01(m[d] + sigma * yw[d]);
+          let psn = 0;
+          for (let d = 0; d < D; d++) { ps[d] = (1 - cs) * ps[d] + Math.sqrt(cs * (2 - cs) * mueff) * zw[d]; psn += ps[d] * ps[d]; }
+          psn = Math.sqrt(psn);
+          const hs = psn / Math.sqrt(1 - Math.pow(1 - cs, 2 * (gen + 1))) / chiN < 1.4 + 2 / (D + 1) ? 1 : 0;
+          for (let d = 0; d < D; d++) {
+            pc[d] = (1 - cc) * pc[d] + hs * Math.sqrt(cc * (2 - cc) * mueff) * yw[d];
+            let rmu = 0; for (let i = 0; i < mu; i++) { const yy = samples[idx[i]].y[d]; rmu += wts[i] * yy * yy; }
+            C[d] = (1 - c1 - cmu) * C[d] + c1 * (pc[d] * pc[d] + (1 - hs) * cc * (2 - cc) * C[d]) + cmu * rmu;
+            C[d] = clamp(C[d], 1e-6, 1e3);
+          }
+          sigma = clamp(sigma * Math.exp((cs / ds) * (psn / chiN - 1)), 1e-3, 1);
+          gen++;
+        },
+        stats() { return { gen, sigma, lambda: lam }; },
+        get mean() { return m; }
+      };
+    }
+  };
+
+  METHODS.race = {
+    name: 'Racing', short: 'Try many plans on a few battles, keep the top third, give them more battles, repeat.', card: 'race',
+    params: [
+      P('n0', 'Plans per round', 3, 81, 1, 27, 'Plans that start each race.'),
+      P('eta', 'Keep 1 in', 2, 4, 1, 3, 'After each round only the best 1 in this many go on, with this many times the battles.'),
+      P('r0', 'First-round battles', 1, 20, 1, 4, 'Battles each plan gets in the first round. Few = fast but luck decides more.')
+    ],
+    presets: { careful: { n0: 9, eta: 3, r0: 10 }, standard: { n0: 27, eta: 3, r0: 4 }, bold: { n0: 81, eta: 3, r0: 2 } },
+    create(ctx, p) {
+      let set = [], n = 0, bracket = 0, round = 0, cut = 0;
+      const fresh = () => {
+        const out = []; const seen = new Set();
+        const add = (pl) => { const k = planKey(pl); if (!seen.has(k)) { seen.add(k); out.push(pl); } };
+        if (bracket === 0 && ctx.startMode === 'plan') add(ctx.startPlan);
+        const best = ctx.bestPlan();
+        let guard = 0;
+        while (out.length < p.n0 && guard++ < p.n0 * 5) {
+          if (best && bracket > 0 && out.length % 2 === 0) { let q = best; const steps = 1 + Math.floor(ctx.rng.next() * 3); for (let s = 0; s < steps; s++) { const nb = ctx.neighbor(q); if (nb) q = nb.plan; } add(q); }
+          else add(ctx.randomPlan());
+        }
+        return out;
+      };
+      return {
+        ask() {
+          if (!set.length) { set = fresh(); n = Math.min(ctx.T, p.r0); round = 0; }
+          return set.map((pl) => ({ plan: pl, n, meta: { bracket, round, desc: `Race ${bracket + 1}, round ${round + 1}: ${n} battles` } }));
+        },
+        tell(c) {
+          if (n >= ctx.T) { set = []; bracket++; return; }
+          const order = c.slice().sort((a, b) => b.score - a.score);
+          const keep = Math.max(1, Math.ceil(order.length / p.eta));
+          cut += order.length - keep;
+          set = order.slice(0, keep).map((x) => x.plan);
+          n = Math.min(ctx.T, n * p.eta); round++;
+        },
+        stats() { return { bracket, round, battles: n, alive: set.length, cut }; }
+      };
+    }
+  };
+
+  const METHOD_ORDER = ['random', 'hill', 'steep', 'anneal', 'tabu', 'ga', 'pso', 'de', 'cma', 'race'];
+  function methodParams(id, preset) {
+    const m = METHODS[id]; const out = {};
+    for (const q of m.params) out[q.k] = q.std;
+    if (preset && m.presets && m.presets[preset]) Object.assign(out, m.presets[preset]);
+    return out;
+  }
+  function cleanParams(id, params) {
+    const m = METHODS[id], out = methodParams(id);
+    for (const q of m.params) if (params && q.k in params) { let v = Number(params[q.k]); if (!isFinite(v)) v = q.std; v = clamp(v, q.min, q.max); if (q.bool) v = v >= 0.5 ? 1 : 0; else v = +(Math.round((v - q.min) / q.step) * q.step + q.min).toFixed(4); out[q.k] = v; }
+    return out;
+  }
+
+  // -------------------------------------------------------------------------
+  // SEARCH DRIVER
+  // -------------------------------------------------------------------------
+  const BUDGETS = [600, 1500, 3000, 6000, 12000, 30000];
+  const TRAIN_SIZES = [10, 20, 30, 50, 100];
+  const FRESH_SIZES = [100, 200, 500];
+  function cleanConfig(cfg) {
+    const c = cfg || {};
+    const method = METHODS[c.method] ? c.method : 'anneal';
+    const locks = Array.isArray(c.locks) ? c.locks.filter((id) => KNOB[id]) : [];
+    return {
+      base: S.normalize(c.base || {}), method, params: cleanParams(method, c.params),
+      race: c.race && METHODS[c.race] && c.race !== method ? c.race : null,
+      raceParams: c.race && METHODS[c.race] ? cleanParams(c.race, c.raceParams) : null,
+      objective: OBJECTIVES[c.objective] ? c.objective : 'margin',
+      T: clamp(Math.round(Number(c.T) || 30), 4, 200), V: clamp(Math.round(Number(c.V) || 200), 20, 2000),
+      budget: clamp(Math.round(Number(c.budget) || 3000), 100, 200000),
+      locks, start: c.start === 'random' ? 'random' : 'plan', seed: (Number(c.seed) >>> 0) || 1,
+      challenge: c.challenge || null
+    };
+  }
+
+  function createSearch(cfgIn, opts) {
+    const cfg = cleanConfig(cfgIn);
+    const methodId = (opts && opts.method) || cfg.method;
+    const params = (opts && opts.params) || cfg.params;
+    const lane = (opts && opts.lane) || 0;
+    const base = cfg.base;
+    const freeSet = new Set(KNOBS.filter((k) => cfg.locks.indexOf(k.id) < 0).map((k) => k.id));
+    // locked drone roles need the budget that carries them, so the budget is locked with them
+    const linked = [];
+    if (!freeSet.has('roles') && freeSet.has('friendlyPct')) { freeSet.delete('friendlyPct'); linked.push('friendlyPct'); }
+    if (!freeSet.has('friendlyPct') && budgetOf(base) === 0) freeSet.delete('roles');
+    const free = KNOBS.filter((k) => freeSet.has(k.id));
+    const freeDims = []; for (const k of free) for (let i = 0; i < k.dims; i++) freeDims.push(k.off + i);
+    const baseX = encodePlan(base);
+    const rng = S.makeRng(S.hash32(cfg.seed, 0x0b7 + lane * 7919));
+    const s = {
+      cfg, methodId, params, lane, base, free, freeSet, D: freeDims.length, T: cfg.T, budget: cfg.budget,
+      spent: 0, evals: 0, cache: new Map(), history: [], best: null, bestScore: -1, bestAt: 0, sinceBest: 0, improvements: 0,
+      done: free.length === 0, truncated: false, rng, linked, startPlan: base, startKey: planKey(base), startScore: null, error: free.length === 0 ? 'Unlock at least one setting for the search to change.' : null
+    };
+    const toFull = (xf) => { const x = baseX.slice(); for (let i = 0; i < freeDims.length; i++) x[freeDims[i]] = xf[i]; return x; };
+    const ctx = {
+      rng, T: cfg.T, D: freeDims.length, startMode: cfg.start, startPlan: base,
+      encode: (pl) => { const x = encodePlan(pl); return freeDims.map((d) => x[d]); },
+      decode: (xf) => decodePlan(toFull(xf), base, freeSet),
+      randomX: () => freeDims.map(() => rng.next()),
+      randomPlan: () => decodePlan(toFull(freeDims.map(() => rng.next())), base, freeSet),
+      neighbor: (pl) => neighbor(pl, free, rng),
+      crossover: (a, b) => { const c = S.deepClone(a); for (const k of free) if (rng.next() < 0.5) copyKnob(c, b, k); return S.normalize(c); },
+      mutate: (pl, rate) => { let q = pl; for (const k of free) if (rng.next() < rate) { if (rng.next() < 0.5) { const m = moveKnob(q, k, rng); if (m) q = m.plan; } else q = randomKnobValue(q, k, rng); } return q; },
+      spentFrac: () => Math.min(1, s.spent / s.budget),
+      bestScore: () => s.bestScore, bestPlan: () => (s.best ? s.best.plan : null)
+    };
+    s.ctx = ctx;
+    s.method = METHODS[methodId].create(ctx, params);
+    return s;
+  }
+  function copyKnob(dst, src, k) {
+    switch (k.type) {
+      case 'loadout': for (const w of W) dst.loadout[w] = src.loadout[w]; break;
+      case 'roles': for (const r of ROLE_KEYS) dst.roles[r] = src.roles[r]; break;
+      case 'emp': dst.empCharges = src.empCharges; dst.empTrigger = src.empTrigger; break;
+      case 'perm': dst.priority = src.priority.slice(); break;
+      default: dst[k.key] = src[k.key];
+    }
+  }
+  function haveN(s, key) { const e = s.cache.get(key); return e ? e.res.length : 0; }
+
+  // One ask/tell round. runBattles(tasks) → Promise of [[compact results], ...] for tasks
+  // {settings, indices}. Returns true while the search should continue.
+  async function stepSearch(s, runBattles) {
+    if (s.done) return false;
+    const cands = s.method.ask();
+    if (!cands || !cands.length) { s.done = true; s.ended = 'method'; return false; }
+    const want = new Map(); let need = 0; const fit = [];
+    for (const c of cands) {
+      c.key = planKey(c.plan); c.n = Math.min(c.n || s.T, s.T);
+      const cur = want.has(c.key) ? want.get(c.key).n : haveN(s, c.key);
+      const add = Math.max(0, c.n - cur);
+      if (s.spent + need + add > s.budget) { s.truncated = true; break; }
+      need += add;
+      want.set(c.key, { plan: s.cache.has(c.key) ? s.cache.get(c.key).plan : c.plan, n: Math.max(cur, c.n) });
+      fit.push(c);
+    }
+    const tasks = [];
+    for (const [key, e] of want) { const have = haveN(s, key); if (e.n > have) { const idx = []; for (let i = have; i < e.n; i++) idx.push(i); tasks.push({ key, plan: e.plan, indices: idx }); } }
+    if (tasks.length) {
+      const out = await runBattles(tasks.map((t) => ({ settings: t.plan, indices: t.indices })));
+      tasks.forEach((t, i) => { let e = s.cache.get(t.key); if (!e) { e = { plan: t.plan, res: [] }; s.cache.set(t.key, e); } for (const r of out[i]) e.res.push(r); });
+    }
+    s.spent += need;
+    const obj = s.cfg.objective;
+    for (const c of fit) {
+      const e = s.cache.get(c.key);
+      c.score = scoreResults(obj, e.res.slice(0, c.n));
+      s.evals++;
+      const rec = { i: s.evals, spent: s.spent, score: c.score, n: c.n, key: c.key, meta: c.meta || {}, best: false, cand: c };
+      if (c.n === s.T) {
+        if (c.key === s.startKey && s.startScore == null) s.startScore = c.score;
+        if (c.score > s.bestScore) { s.bestScore = c.score; s.best = { plan: c.plan, key: c.key, score: c.score, at: s.spent, desc: (c.meta && c.meta.desc) || '' }; s.bestAt = s.evals; s.sinceBest = 0; s.improvements++; rec.best = true; }
+        else s.sinceBest++;
+      }
+      s.history.push(rec);
+    }
+    if (fit.length === cands.length) s.method.tell(cands);
+    else { s.done = true; s.ended = 'budget'; }
+    if (fit.length) for (const rec of s.history.slice(-fit.length)) { rec.acc = !!rec.cand.accepted; rec.worse = !!rec.cand.worse; delete rec.cand; }
+    if (s.spent >= s.budget) { s.done = true; s.ended = s.ended || 'budget'; }
+    return !s.done;
+  }
+
+  async function runSearch(s, runBattles, onRound, shouldStop) {
+    while (!s.done) {
+      if (shouldStop && shouldStop()) { s.done = true; s.stopped = true; s.ended = 'stopped'; break; }
+      await stepSearch(s, runBattles);
+      if (onRound) await onRound(s);
+    }
+    return s;
+  }
+
+  // top distinct plans fully scored on training battles
+  function topPlans(s, n) {
+    const out = [];
+    for (const [key, e] of s.cache) if (e.res.length >= s.T) out.push({ key, plan: e.plan, score: scoreResults(s.cfg.objective, e.res.slice(0, s.T)) });
+    out.sort((a, b) => b.score - a.score || (a.key < b.key ? -1 : 1));
+    return out.slice(0, n || 5);
+  }
+
+  function freshSettings(plan) { const p = S.deepClone(plan); p.seed = freshSeed(plan.seed); return S.normalize(p); }
+  function trainTask(plan, T) { const idx = []; for (let i = 0; i < T; i++) idx.push(i); return { settings: plan, indices: idx }; }
+  function freshTask(plan, V) { const idx = []; for (let i = 0; i < V; i++) idx.push(i); return { settings: freshSettings(plan), indices: idx }; }
+  function summarizeFresh(obj, res) {
+    const w = res.reduce((a, r) => a + r.w, 0), ci = S.wilson(w, res.length);
+    return { score: scoreResults(obj, res), win: ci.p, lo: ci.lo, hi: ci.hi, n: res.length, wins: w };
+  }
+
+  // -------------------------------------------------------------------------
+  // LOCAL EVALUATOR (Node tests, and the page when workers are unavailable)
+  // -------------------------------------------------------------------------
+  function runTasksSync(tasks) {
+    return tasks.map((t) => { const st = S.normalize(t.settings); return t.indices.map((i) => compact(S.runBattle(st, i), st.droneCount)); });
+  }
+  function localRunner() { return (tasks) => Promise.resolve(runTasksSync(tasks)); }
+
+  // -------------------------------------------------------------------------
+  // LANDSCAPE — a 2D slice through the plan space
+  // -------------------------------------------------------------------------
+  function gridValues(k, n) { const out = []; for (let i = 0; i < n; i++) out.push(snapNum(k, k.min + (k.max - k.min) * i / (n - 1))); return out; }
+  function landscapePlans(base, kx, ky, n) {
+    const KX = KNOB[kx], KY = KNOB[ky], xs = gridValues(KX, n), ys = gridValues(KY, n), out = [];
+    for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const p = S.deepClone(base); p[KX.key] = xs[i]; p[KY.key] = ys[j]; out.push({ i, j, plan: S.normalize(p) }); }
+    return { xs, ys, plans: out };
+  }
+
+  // -------------------------------------------------------------------------
+  // COACH — plain-language tips from what the search is doing
+  // -------------------------------------------------------------------------
+  function coachTips(s, fresh) {
+    const tips = [], st = s.method && s.method.stats ? s.method.stats() : {};
+    const id = s.methodId, plansAffordable = Math.floor(s.budget / s.T);
+    if (s.T <= 10) tips.push({ id: 'noise', card: 'noise', text: `Each plan gets only ${s.T} battles, so luck moves scores by 15 points or more. Expect a big luck bonus.` });
+    if (plansAffordable < 40) tips.push({ id: 'budget', card: 'budget', text: `This budget pays for about ${plansAffordable} plans at ${s.T} battles each. Raise the budget or use fewer training battles.` });
+    if ((id === 'hill' || id === 'steep' || id === 'tabu' || id === 'anneal') && s.sinceBest >= 30) tips.push({ id: 'stall', card: 'local', text: `No new best in ${s.sinceBest} plans: the search is probably on a hilltop. ${id === 'hill' ? 'Turn on restarts or try Simulated annealing.' : id === 'anneal' ? 'A higher start temperature lets it wander further.' : 'A longer tabu list pushes it further away.'}` });
+    if (id === 'anneal' && st.temp != null) tips.push({ id: 'temp', card: 'anneal', text: `Temperature ${st.temp.toFixed(1)} points: a plan ${st.temp.toFixed(1)} points worse is accepted about 1 time in 3. It has accepted ${st.worse} worse plans so far.` });
+    if (id === 'pso' && st.it > 3 && st.spread < 0.04) tips.push({ id: 'collapse', card: 'pso', text: 'The flock has bunched onto one spot, so it has stopped exploring. More inertia or a higher top speed keeps it spread out.' });
+    if (id === 'ga' && st.gen > 2 && st.diversity <= Math.max(3, Math.round(st.pop / 5))) tips.push({ id: 'clones', card: 'ga', text: `Only ${st.diversity} different plans are left in a population of ${st.pop}. Raise mutation to bring new ideas in.` });
+    if (id === 'race' && st.bracket >= 1) tips.push({ id: 'race', card: 'race', text: `${st.cut} plans have been cut after a few battles. Some were unlucky rather than bad; that is the price of speed.` });
+    if (fresh && s.best) {
+      const gap = Math.round((s.best.score - fresh.score) * 100);
+      if (gap >= 8) tips.push({ id: 'luck', card: 'overfit', text: `The best plan scored ${gap} points lower on fresh battles. Part of its training score was luck; the fresh score is the honest one.` });
+      else tips.push({ id: 'honest', card: 'overfit', text: `Fresh battles confirmed the training score within ${Math.max(0, gap)} points, so this plan is not just lucky.` });
+    }
+    return tips;
+  }
+
+  // -------------------------------------------------------------------------
+  // RUN CODES, CHALLENGES, REFERENCES
+  // -------------------------------------------------------------------------
+  function b64e(str) { if (typeof btoa === 'function') return btoa(unescape(encodeURIComponent(str))); return Buffer.from(str, 'utf8').toString('base64'); }
+  function b64d(b) { if (typeof atob === 'function') return decodeURIComponent(escape(atob(b))); return Buffer.from(b, 'base64').toString('utf8'); }
+  function encodeRun(cfg) {
+    const c = cleanConfig(cfg);
+    return 'o1.' + b64e(JSON.stringify(c)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+  function decodeRun(code) {
+    try {
+      const b = String(code).trim().replace(/^#?o1\./, '').replace(/-/g, '+').replace(/_/g, '/');
+      return cleanConfig(JSON.parse(b64d(b + '==='.slice((b.length + 3) % 4))));
+    } catch (e) { return null; }
+  }
+
+  const CHALLENGES = [
+    { id: 'first', name: 'First climb', blurb: 'The default swarm and battlefield. Find a plan that holds.', env: {}, budget: 1500, target: 0.65 },
+    { id: 'gunship', name: 'Gunship storm', blurb: 'Armored gunships make up 60% of the swarm.', env: { mix: { fpv: 20, bomber: 20, gunship: 60 } }, budget: 3000, target: 0.3 },
+    { id: 'night', name: 'Night forest', blurb: 'Every battle at night, in forest, on jagged ridges.', env: { scenarioMode: 'fixed', terrain: 'ridges', amp: 9, freq: 4, timeOfDay: 'night', trees: 'forest', caves: 2, wind: 4 }, budget: 3000, target: 0.75 },
+    { id: 'flood', name: 'FPV flood', blurb: 'Forty drones, mostly kamikaze FPVs.', env: { droneCount: 40, mix: { fpv: 80, bomber: 15, gunship: 5 } }, budget: 3000, target: 0.7 },
+    { id: 'shoestring', name: 'Shoestring', blurb: 'Default swarm, but only 600 battles to spend.', env: {}, budget: 600, target: 0.45 }
+  ];
+  const ENV_KEYS = ['droneCount', 'mix', 'waves', 'bearings', 'aggression', 'targetPref', 'battery', 'terrain', 'amp', 'freq', 'coverDensity', 'trees', 'caves', 'timeOfDay', 'wind', 'scenarioMode', 'randomize', 'seed'];
+  function challengeBase(ch, plan) {
+    const d = S.deepClone(S.DEFAULTS), p = S.deepClone(plan);
+    for (const k of ENV_KEYS) p[k] = S.deepClone(d[k]);
+    Object.assign(p, S.deepClone(ch.env));
+    return S.normalize(p);
+  }
+  // best plan from a long offline search on the default swarm (filled in by test/record.js)
+  const RECORD = {"formation":"ring","spacing":6,"coverDiscipline":0,"movement":"hold","buddyRevive":true,"sergeantWeapon":"ar","ammoLoad":2,"friendlyPct":20,"engageRange":93,"fireDiscipline":"priority","staggerReload":true,"retreatThreshold":1,"caveDoctrine":"never","holdFireCanopy":true,"loadout":{"ar":3,"shotgun":0,"dmr":2,"lmg":0,"jammer":1,"gl":4},"roles":{"interceptor":2,"spotter":1,"decoy":0},"empCharges":1,"empTrigger":6,"priority":["bomber","gunship","fpv"]};
+  function referencePlans(base) {
+    const out = [], yk = planKey(base);
+    let mine = false;
+    for (const k of Object.keys(S.PRESETS)) {
+      const plan = S.applyPreset(base, k), yours = planKey(plan) === yk;
+      if (yours) mine = true;
+      out.push({ id: k, name: S.PRESETS[k].name + (yours ? ' (your plan)' : ''), plan, yours });
+    }
+    if (RECORD) { const p = S.deepClone(base); for (const k of KNOBS) copyKnob(p, RECORD, k); const plan = S.normalize(p); out.push({ id: 'record', name: 'Record plan', plan, yours: planKey(plan) === yk }); if (planKey(plan) === yk) mine = true; }
+    if (!mine) out.push({ id: 'yours', name: 'Your starting plan', plan: S.normalize(base), yours: true });
+    return out;
+  }
+
+  const api = {
+    KNOBS, KNOB, MAP_KNOBS, LOCK_SETS, METHODS, METHOD_ORDER, OBJECTIVES, BUDGETS, TRAIN_SIZES, FRESH_SIZES, CHALLENGES, RECORD, ENV_KEYS, D_ALL,
+    apportion, groupValue, planKey, fmtValue, describePlan, diffPlans, encodePlan, decodePlan, neighbor, moveKnob, copyKnob,
+    compact, scoreResults, winRate, freshSeed, freshSettings, trainTask, freshTask, summarizeFresh,
+    methodParams, cleanParams, cleanConfig, createSearch, stepSearch, runSearch, topPlans,
+    runTasksSync, localRunner, landscapePlans, gridValues, coachTips, encodeRun, decodeRun, challengeBase, referencePlans
+  };
+  root.SGOpt = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* =========================================================================
+   Sergeant's Gambit — LEARN: plain-language guide to optimization methods
+   Written for a high school graduate: everyday pictures first, then the
+   game's own numbers. Rendered by optui.js.
+   ========================================================================= */
+(function (root) {
+  'use strict';
+  const L = {};
+
+  L.intro = {
+    title: 'Let a method find your plan',
+    body: [
+      'A battle plan in this game is 18 settings: formation, spacing, weapons, drones, rules of engagement and more. There are billions of possible plans, far too many to try by hand.',
+      'An optimization method is a recipe for searching through them. It tries a plan, sees how well it does, and uses what it learned to choose the next plan. Different recipes search in different ways, and some are much better at certain kinds of problems than others.',
+      'This guide explains the eight big ideas you need, then each method, then how to choose. Reading it takes about ten minutes. You can also just press Start search with the standard settings and come back here when something surprises you.'
+    ]
+  };
+
+  // ---------------------------------------------------------------- concepts
+  L.concepts = [
+    { id: 'goal', title: 'The goal (objective)', picture: 'The number on the scoreboard that the search is trying to push up.',
+      body: ['Every search needs one number to improve. In this game you pick it under Aim for:',
+        '<b>Win rate</b> is the share of training battles your squad wins. Simple, but jumpy: with 30 battles it can only move in steps of about 3 points.',
+        '<b>Win rate + margin</b> (the default) still ranks every win above every loss, but also gives a little credit for winning with more soldiers standing, or losing after destroying most of the swarm. Because small improvements now show up in the score, methods that climb step by step find their way more easily.',
+        '<b>Worst battlefield</b> looks at your win rate on each type of terrain and scores the plan by its weakest one. Use it when you want a plan that never collapses, even if its average is a bit lower.'],
+      example: 'A plan that wins 15 of 30 battles has a win rate of 50%. If its wins usually leave 8 soldiers standing, its win rate + margin score is a bit higher, around 55.' },
+    { id: 'noise', title: 'Luck (noise)', picture: 'Flipping a coin 10 times and getting 7 heads does not mean the coin is unfair.',
+      body: ['Battles are random: where the drones come from, the terrain, who gets hit. So the same plan scores a bit differently on different sets of battles. Statisticians call this <b>noise</b>.',
+        'The fewer battles you use per plan, the more luck matters. With 10 battles a plan\'s score can easily be 15 points away from its true value. With 30 battles it is usually within about 9 points, and with 100 battles within about 5.',
+        'This is why two plans whose scores differ by only 2 or 3 points might really be equally good.'],
+      example: 'Hold the Ring wins a little under half of all possible battles. On a particular set of 30 battles it might score anywhere from about 30% to 65%.' },
+    { id: 'landscape', title: 'The landscape', picture: 'Imagine every possible plan as a spot on a huge map, with its score as the height of the ground.',
+      body: ['Good plans are high ground and bad plans are valleys. Searching means walking around this map in thick fog, looking for the highest point. You can only learn the height of a spot by standing on it, which costs battles.',
+        'Plans that differ by one setting are neighbors on the map. Small changes usually move you a little up or down; big changes can jump you anywhere.',
+        'The Landscape map on the search screen shows a small slice of this map: two settings across and up, with all the others held fixed. Bright cells are high ground.'],
+      example: 'Moving spacing from 5 m to 6 m is a short step. Swapping a ring formation and 4 rifles for a dispersed formation and 5 shotguns is a long jump.' },
+    { id: 'local', title: 'Hilltops (local optima)', picture: 'A hiker in fog who only walks uphill will stop at the top of the first small hill, even if a mountain is nearby.',
+      body: ['A <b>local optimum</b> is a plan that is better than all its neighbors but not the best plan overall. Any method that only ever accepts improvements gets stuck on one.',
+        'Methods escape hilltops in different ways: starting over somewhere random (restarts), sometimes accepting a worse plan on purpose (annealing), refusing to go back the way they came (tabu), or keeping many plans at once (populations and swarms).',
+        'In tests on this game, 8 simple climbs from random starts got stuck on 8 different plans, scoring anywhere from 17% to 58% on their training battles.'],
+      example: 'If the coach says "No new best in 30 plans", your search is probably sitting on a hilltop.' },
+    { id: 'explore', title: 'Exploring vs exploiting', picture: 'Trying a new restaurant (exploring) or going back to your favorite (exploiting).',
+      body: ['<b>Exploring</b> means trying plans far from anything you know, hoping to find better ground. <b>Exploiting</b> means making small improvements to the best plan you have.',
+        'Explore too much and you never polish anything. Exploit too much and you polish the wrong plan. Every method balances the two, and most method settings move that balance. The Careful, Standard and Bold presets are three points on this balance.'],
+      example: 'In Simulated annealing, a higher start temperature means more exploring early on.' },
+    { id: 'budget', title: 'Budget', picture: 'Battles are the money you spend on finding out.',
+      body: ['Every plan the search tests costs battles: 30 battles per plan by default. A budget of 3,000 battles therefore buys about 100 plans.',
+        'This is the central trade-off: more battles per plan means less luck in each score but fewer plans tried. Fewer battles per plan means more plans but each score is shakier.',
+        'A plan already tested is remembered, so going back to it is free. Checking the final plan on fresh battles is also free.'],
+      example: '3,000 battles at 30 per plan ≈ 100 plans. 3,000 battles at 10 per plan ≈ 300 plans, but each score is much less trustworthy.' },
+    { id: 'overfit', title: 'The luck bonus (overfitting)', picture: 'If 100 people each flip a coin 10 times, the one with the most heads was mostly lucky, not skilled.',
+      body: ['A search tries many plans and keeps the one with the highest score. Some of that high score is usually luck: the plan happened to do well on those particular training battles. This is called <b>overfitting</b>.',
+        'To get an honest number, the game tests the winning plan on <b>fresh battles</b> it has never seen. The difference between the training score and the fresh score is the <b>luck bonus</b>.',
+        'Always judge a search by its fresh score. A luck bonus of 5 to 10 points is normal; a bigger one means the search chased luck, usually because each plan had too few battles.'],
+      example: 'Best plan: 63 in training, 55 on fresh battles. Luck bonus 8 points. Its real strength is about 55.' },
+    { id: 'repeat', title: 'Repeating a search (reproducibility)', picture: 'A recipe with exact amounts gives the same cake every time.',
+      body: ['Every random choice a method makes comes from the search seed. The same seed, settings, method and budget always repeat exactly the same search, on any device, whether it uses one processor core or eight.',
+        'That is what the run code is: everything needed to repeat the search. Share it, and anyone can check your result or try to beat it with a different method on the very same battles.',
+        'Change only the search seed to see how much a method\'s result depends on luck.'],
+      example: 'Run the same method with seeds 1, 2 and 3. If the fresh scores are 52, 55 and 49, the method is worth about 52 give or take 3 on this problem.' },
+    { id: 'presets', title: 'Careful, Standard, Bold', picture: 'Three starting points for each method\'s dials.',
+      body: ['<b>Standard</b> uses the textbook values that work well on most problems. Start here.',
+        '<b>Careful</b> explores less and stays near the starting plan. Good when you already have a decent plan and want to polish it.',
+        '<b>Bold</b> explores widely. Good when you suspect your plan is on the wrong hill entirely, or you have a big budget.',
+        'You can change any individual setting afterwards; the preset buttons then show Custom.'] },
+    { id: 'locks', title: 'Locks: what the search may change', picture: 'Telling a designer which parts of the house they may rebuild.',
+      body: ['Each of the 18 setting groups can be locked. A locked setting keeps the value from your plan; an unlocked one is the method\'s to change.',
+        'Locking settings makes the search space smaller, so the method finds good values for the rest faster. For example, unlock only Loadout to ask "what weapons should this exact plan carry?"',
+        'Locking Drone roles also locks the drone budget, because the roles need that budget to exist.'] }
+  ];
+
+  // ----------------------------------------------------------------- methods
+  L.methods = {
+    random: { title: 'Random search', picture: 'Throwing darts at the map with your eyes closed, and remembering where the highest dart landed.',
+      how: ['Pick a completely random plan.', 'Test it.', 'If it beats the best so far, remember it.', 'Repeat until the budget runs out.'],
+      settings: [{ name: 'Plans per round', what: 'Only changes how often the screen updates. It does not change the result.', ref: '10' }],
+      shines: 'As a baseline. Any method worth using must beat it on the same budget. It also never gets stuck, and with a big budget it is surprisingly hard to beat.',
+      warning: 'It never refines a good plan: finding the very best values by luck alone takes a huge budget.',
+      tryThis: 'Run it once with your budget and note its fresh score. That is the bar every other method has to clear.' },
+    hill: { title: 'Hill climb', picture: 'A hiker in fog who feels which way is uphill and takes a step that way.',
+      how: ['Start from your plan (or a random one).', 'Change one setting a little: a step up or down, another choice, one soldier to another weapon.', 'Test the new plan. If it scores better, keep it; otherwise go back.', 'Repeat. If nothing helps for a while, either keep trying or restart from a random plan.'],
+      settings: [
+        { name: 'Tries per step', what: 'How many single changes to test before moving.', up: 'Picks the best of several changes (a steepest climb): surer steps, but more battles per step.', down: '1 takes the first improvement it finds: cheap and fast.', ref: '1' },
+        { name: 'Restart after', what: 'How many tries without improvement before giving up on this spot.', up: 'Polishes each hill longer.', down: 'Jumps to new places sooner.', ref: '25 tries' },
+        { name: 'Restart when stuck', what: 'Whether to jump to a random plan after giving up.', up: 'On: explores several hills.', down: 'Off: keeps trying the same hill to the end.', ref: 'On' },
+        { name: 'Accept equal scores', what: 'Whether a change that scores exactly the same counts as a step.', up: 'On: can walk across flat ground to find a slope.', down: 'Off: stops at the first flat area.', ref: 'On' }],
+      shines: 'Polishing a plan that is already good, cheaply. It is also the clearest way to see a local optimum: in our tests, climbs from Hold the Ring mostly stayed on its hill while other methods found plans winning far more often.',
+      warning: 'Gets stuck on the nearest hilltop. If its fresh score is far below other methods, it climbed the wrong hill.',
+      tryThis: 'Run it with restarts off, then on, with the same seed. The difference shows how much hilltops matter here.' },
+    steep: { title: 'Steepest climb + restarts', picture: 'A hiker who checks every direction before each step, and takes a helicopter to a random spot when stuck.',
+      how: ['Start from your plan.', 'Test many single changes (12 by default) and move to the best one, if it is an improvement.', 'When two steps in a row bring no gain, restart from a random plan.', 'Keep the best plan found on any hill.'],
+      settings: [
+        { name: 'Tries per step', what: 'Neighbors tested before each move.', up: 'More certain of each step, fewer steps in total.', down: 'Cheaper steps, more chance of a poor step.', ref: '12' },
+        { name: 'Restart after', what: 'Tries without gain before restarting.', up: 'Stays on each hill longer.', down: 'Visits more hills.', ref: '24 tries (two steps)' }],
+      shines: 'Shows very clearly how many different hilltops a problem has. Each restart usually ends on a different plan.',
+      warning: 'Costly: with 30 battles per plan, each step can cost 360 battles.',
+      tryThis: 'Watch the landscape map: each restart is a jump, then a short climb.' },
+    anneal: { title: 'Simulated annealing', picture: 'Metal cooled slowly ends up stronger because its atoms have time to settle into the best arrangement. Early on they jiggle around a lot; as it cools they settle.',
+      how: ['Start from your plan.', 'Change one setting a little and test it.', 'If it is better, keep it. If it is worse, keep it anyway with some probability: likely when the temperature is high and the drop is small, unlikely when cold or the drop is big.', 'Lower the temperature a little after every plan, until it reaches the end temperature as the budget runs out.'],
+      settings: [
+        { name: 'Start temperature', what: 'How willing it is to accept a worse plan at the start, in score points. At temperature 6, a plan 6 points worse is accepted about 1 time in 3, and a plan 2 points worse about 7 times in 10.', up: 'Wanders further at first, can escape bigger hilltops, wastes more early battles.', down: 'Behaves more like a hill climb from the start.', ref: '6 points' },
+        { name: 'End temperature', what: 'How fussy it is by the end.', up: 'Still wandering at the end, may not polish its plan.', down: 'Polishes carefully at the end, like a hill climb.', ref: '0.3 points' }],
+      shines: 'Escaping small hilltops with a simple, cheap move. In our tests it clearly beat a plain hill climb from the same start, though the population methods did better still.',
+      warning: 'If the start temperature is much bigger than the luck in each score, it mostly wanders. If it is tiny, it is just a hill climb.',
+      tryThis: 'Watch the coach line: it reports how many worse plans were accepted. Most should happen early.' },
+    tabu: { title: 'Tabu search', picture: 'Exploring a city and keeping a list of the streets you just walked so you do not go round in circles.',
+      how: ['Start from your plan.', 'Test several single changes (8 by default).', 'Move to the best of them, even if it is worse than where you are now, unless that change would undo a recent move.', 'Add the move you just made to the tabu (forbidden) list for a while. Exception: a forbidden move is allowed if it gives the best score ever.'],
+      settings: [
+        { name: 'Tries per step', what: 'Changes looked at before each move.', up: 'Better moves, more battles per step.', down: 'Cheaper, more random moves.', ref: '8' },
+        { name: 'Tabu list length', what: 'How many recent moves stay forbidden.', up: 'Pushed further from where it has been; may run out of good moves.', down: 'May slide back to the same hilltop.', ref: '7 moves' },
+        { name: 'Allow a record-breaking forbidden move', what: 'The standard exception (called aspiration).', up: 'On: never misses a new best.', down: 'Off: the list is strict.', ref: 'On' }],
+      shines: 'Walking off hilltops in a controlled way, without the randomness of annealing.',
+      warning: 'Spends several plans per step, so it takes fewer steps on a small budget.',
+      tryThis: 'Compare its path on the landscape map with a hill climb: it keeps moving even when no move is uphill.' },
+    ga: { title: 'Genetic algorithm', picture: 'Breeding champion plans the way farmers breed better crops: the best parents have children that mix their traits, with the occasional random change.',
+      how: ['Make a population of plans (20 by default): yours plus random ones. Test them all.', 'Pick parents by tournament: draw 3 plans at random and the best of them becomes a parent.', 'Make a child: each setting comes from one parent or the other (crossover). Then a few settings change at random (mutation).', 'Test the children. The next generation is the children plus the best 2 old plans (elites), so the best is never lost.', 'Repeat.'],
+      settings: [
+        { name: 'Population', what: 'Plans alive at once.', up: 'More variety, slower generations.', down: 'Faster generations, plans become alike sooner.', ref: '20' },
+        { name: 'Elites kept', what: 'Best plans copied unchanged into the next generation.', up: 'Safer, but the population can stop changing.', down: 'More turnover, the best plan could be lost if 0.', ref: '2' },
+        { name: 'Tournament size', what: 'How many random plans compete to be a parent.', up: 'The fittest breed much more (exploiting).', down: 'Weaker plans breed too (exploring).', ref: '3' },
+        { name: 'Crossover', what: 'Chance a child mixes two parents.', up: 'More mixing of ideas.', down: 'Children are mostly copies plus mutations.', ref: '80%' },
+        { name: 'Mutation', what: 'Chance each setting of a child changes at random.', up: 'More new ideas, more noise.', down: 'The population settles faster, maybe too fast.', ref: '15% per setting' }],
+      shines: 'Combining good ideas found in different plans, for example one plan\'s loadout with another\'s tactics. Handles choices and on/off settings naturally.',
+      warning: 'The population can become copies of one plan. The coach warns you when only a few different plans are left.',
+      tryThis: 'Raise mutation to 30% and compare the fresh score with the standard 15%, same seed.' },
+    pso: { title: 'Particle swarm', picture: 'A flock of birds looking for food: each bird remembers the best spot it found, sees the best spot any bird found, and flies somewhere between the two, keeping some of its own speed.',
+      how: ['Scatter 12 plans (particles) over the map, each with a random speed.', 'Test them all.', 'Each particle remembers its own best plan; the flock remembers the best plan of all.', 'Each particle\'s new speed = some of its old speed (inertia) + a pull toward its own best + a pull toward the flock\'s best, with a bit of randomness. It moves by that speed.', 'Repeat.'],
+      settings: [
+        { name: 'Particles', what: 'Size of the flock.', up: 'Covers more ground, slower rounds.', down: 'Faster rounds, easier to miss things.', ref: '12' },
+        { name: 'Inertia', what: 'How much of its speed each particle keeps.', up: 'Roams further, explores.', down: 'Settles quickly, may settle too soon.', ref: '0.73' },
+        { name: 'Pull to own best', what: 'How strongly a particle returns to its own best spot.', up: 'Particles keep their own ideas longer.', down: 'Everyone follows the leader.', ref: '1.5' },
+        { name: 'Pull to flock best', what: 'How strongly particles are drawn to the overall best.', up: 'Gathers quickly on the best spot.', down: 'Particles search more independently.', ref: '1.5' },
+        { name: 'Top speed', what: 'The largest move per step, as a share of each setting\'s range.', up: 'Big jumps.', down: 'Small careful steps.', ref: '0.25' }],
+      shines: 'Number settings like spacing, ranges and thresholds. It is also the best to watch: the particles visibly gather on good ground.',
+      warning: 'The flock can bunch up early and stop exploring. Choices like formation are rounded from positions, which is cruder.',
+      tryThis: 'Pick spacing and engagement range on the landscape map and watch the particles move.' },
+    de: { title: 'Differential evolution', picture: 'To make a new recipe, take the difference between two recipes you have tried and add it to a third.',
+      how: ['Make a population of 15 plans and test them.', 'For each plan, build a trial: pick three other plans A, B and C, and compute A + F × (B − C) setting by setting.', 'Mix the trial with the original: each setting comes from the trial with chance CR.', 'If the trial scores at least as well as the original, it replaces it.', 'Repeat.'],
+      settings: [
+        { name: 'Population', what: 'Plans kept at once.', up: 'More variety, slower generations.', down: 'Faster, less variety.', ref: '15' },
+        { name: 'Step size F', what: 'How far a trial jumps along the difference.', up: 'Bigger jumps.', down: 'Smaller, careful steps.', ref: '0.6' },
+        { name: 'Crossover CR', what: 'Share of settings taken from the trial.', up: 'Changes many settings at once.', down: 'Changes a few settings at a time.', ref: '0.8' }],
+      shines: 'Many number settings that interact. The step sizes adapt by themselves: as plans become alike, their differences shrink.',
+      warning: 'Choices and on/off settings are coarse for it, and every slot only improves, so it can be slow to escape a hilltop.',
+      tryThis: 'Lock everything except the number settings (spacing, cover, ammo, ranges) and compare it with the genetic algorithm.' },
+    cma: { title: 'CMA-ES (diagonal)', picture: 'A scout who throws a cloud of guesses around a center point, moves the center toward the best guesses, and stretches the cloud in the directions that worked.',
+      how: ['Start with a center (your plan) and a cloud width (start step).', 'Sample a round of plans from the cloud and test them.', 'Move the center toward the average of the best half.', 'Make the cloud wider along settings where big changes helped and narrower where they did not; shrink or grow its overall size depending on progress.', 'Repeat. (Diagonal means it stretches along each setting separately, a simpler version of full CMA-ES.)'],
+      settings: [
+        { name: 'Start step', what: 'Width of the first cloud, as a share of each setting\'s range.', up: 'Looks far from your plan first.', down: 'Looks close to your plan first.', ref: '0.3' },
+        { name: 'Plans per round', what: '0 picks it automatically: 4 + 3 × ln(number of settings searched), about 14.', up: 'Steadier rounds, fewer of them.', down: 'More rounds, noisier.', ref: 'Automatic' }],
+      shines: 'An advanced method that is among the best for continuous problems, and the best method in our tests on this game. It learns the shape of the landscape as it goes.',
+      warning: 'Needs a few hundred plans to learn that shape, so it shines with bigger budgets. Noise can confuse it with few battles per plan.',
+      tryThis: 'Give it 6,000 battles and compare it with annealing at the same budget.' },
+    race: { title: 'Racing (successive halving)', picture: 'A talent show with cuts: everyone gets a short audition, the best third go through to a longer round, and so on until the final.',
+      how: ['Pick 27 plans (yours, random ones, and later variations of the best).', 'Give each just 4 battles.', 'Keep the best third (9) and give them 12 battles each, reusing the first 4.', 'Keep the best third (3) and give them the full 30 battles.', 'Start a new race. Later races mix random plans with variations of the best so far.'],
+      settings: [
+        { name: 'Plans per round', what: 'Plans that start each race.', up: 'Wider search per race.', down: 'Fewer plans, but each gets more battles early.', ref: '27' },
+        { name: 'Keep 1 in', what: 'How many are cut each round (3 means keep the best third, with 3 times the battles).', up: 'Harsher cuts, faster.', down: 'Gentler cuts, more battles spent.', ref: '3' },
+        { name: 'First-round battles', what: 'Battles each plan gets in the first round.', up: 'Fairer first cut, fewer plans.', down: 'More plans, but luck decides the first cut.', ref: '4' }],
+      shines: 'Spending battles wisely: bad plans are dropped after only a few battles, so most of the budget goes to promising ones.',
+      warning: 'A good plan with an unlucky first few battles is cut and never comes back.',
+      tryThis: 'Set training battles to 50 and compare it with random search at the same budget.' }
+  };
+
+  L.choose = {
+    title: 'Choosing a method',
+    rules: [
+      'Always run Random search once as the baseline. A method only earns its keep if its fresh score beats random search on the same budget.',
+      'To find a new plan, use a population method: in our tests CMA-ES, the genetic algorithm, differential evolution and particle swarm (and Racing) all beat the local methods clearly at 3,000 battles.',
+      'To polish a plan you already like, use annealing or tabu search: they stay near it. Plain hill climbs from a preset mostly stayed on that preset\'s hill.',
+      'Below about 1,000 battles of budget no method reliably beats a good preset: luck decides too much. Spend more battles, or polish rather than search.',
+      'If two methods\' fresh scores are within each other\'s 95% intervals, call it a tie. Run more seeds to separate them.',
+      'Choose the training size first: 10 battles per plan is mostly luck, 30 is the usual balance, 100 is for final polishing.'
+    ]
+  };
+
+  L.glossary = [
+    ['Budget', 'The total number of battles a search may simulate.'],
+    ['Candidate', 'A plan the method has proposed and wants tested.'],
+    ['Crossover', 'Making a new plan by mixing settings from two parent plans.'],
+    ['Elite', 'A top plan copied unchanged into the next generation.'],
+    ['Exploit', 'Make small improvements to the best plan found so far.'],
+    ['Explore', 'Try plans far from anything tested so far.'],
+    ['Fresh battles', 'Battles no plan was trained on, used for an honest final score.'],
+    ['Generation', 'One round of a population method: the whole population is tested once.'],
+    ['Landscape', 'All possible plans pictured as a map, with score as height.'],
+    ['Local optimum', 'A plan better than all its neighbors but not the best overall: a hilltop.'],
+    ['Luck bonus', 'Training score minus fresh score: how much of the training score was luck.'],
+    ['Mutation', 'A random change to a setting, used to bring in new ideas.'],
+    ['Neighbor', 'A plan that differs from another by one small change.'],
+    ['Noise', 'Random variation in a score caused by which battles happened to be fought.'],
+    ['Objective', 'The number the search is trying to raise.'],
+    ['Overfitting', 'Choosing a plan that looks good mainly because it was lucky on the training battles.'],
+    ['Population', 'A group of plans a method keeps and improves together.'],
+    ['Run code', 'A short text that holds everything needed to repeat a search exactly.'],
+    ['Search seed', 'The number that drives every random choice a method makes.'],
+    ['Temperature', 'In annealing, how willing the method is to accept a worse plan.'],
+    ['Training battles', 'The battles every plan is scored on during the search, the same for all plans.'],
+    ['95% interval', 'The range that, 95 times in 100, contains a plan\'s true win rate.']
+  ];
+
+  // reference results, filled from test/bench runs (default swarm, 3,000 battles, 30 per plan)
+  L.bench = {
+   "ringWin": 0.455,
+   "note": "Each method searched from Hold the Ring against the default swarm and randomized battlefields: 3,000 battles of budget, 30 training battles per plan, aiming for win rate + margin, standard settings, 5 search seeds each. Every best plan was then checked on the same 200 fresh battles.",
+   "refs": "For comparison, Hold the Ring itself wins 46% of those fresh battles. Results vary with the seed, so treat differences of a few points as ties.",
+   "rows": [
+    {
+     "method": "cma",
+     "win": 0.844,
+     "min": 0.815,
+     "max": 0.87,
+     "luck": 5
+    },
+    {
+     "method": "race",
+     "win": 0.773,
+     "min": 0.69,
+     "max": 0.845,
+     "luck": 9.4
+    },
+    {
+     "method": "ga",
+     "win": 0.762,
+     "min": 0.655,
+     "max": 0.89,
+     "luck": 5
+    },
+    {
+     "method": "de",
+     "win": 0.745,
+     "min": 0.555,
+     "max": 0.865,
+     "luck": -2.5
+    },
+    {
+     "method": "pso",
+     "win": 0.715,
+     "min": 0.515,
+     "max": 0.915,
+     "luck": 8.4
+    },
+    {
+     "method": "tabu",
+     "win": 0.68,
+     "min": 0.585,
+     "max": 0.765,
+     "luck": 9.3
+    },
+    {
+     "method": "anneal",
+     "win": 0.636,
+     "min": 0.47,
+     "max": 0.745,
+     "luck": 13.4
+    },
+    {
+     "method": "random",
+     "win": 0.598,
+     "min": 0.455,
+     "max": 0.785,
+     "luck": 2.4
+    },
+    {
+     "method": "steep",
+     "win": 0.514,
+     "min": 0.455,
+     "max": 0.69,
+     "luck": 7.9
+    },
+    {
+     "method": "hill",
+     "win": 0.486,
+     "min": 0.32,
+     "max": 0.59,
+     "luck": 10.9
+    }
+   ]
+  };
+
+  root.SGLearn = L;
+  if (typeof module !== 'undefined' && module.exports) module.exports = L;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
 <script>
 /* =========================================================================
    RENDER — Three.js r128. Reads simulation snapshots, never mutates the sim.
@@ -3548,6 +4790,765 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
 </script>
 <script>
 /* =========================================================================
+   Sergeant's Gambit — OPTIMIZE + LEARN screens
+   Drives SGOpt searches from the page: settings panel, live search view,
+   results report, history, challenges and the Learn guide. Battles run in
+   background workers when the browser allows it, otherwise on the page in
+   short slices; results are identical either way.
+   ========================================================================= */
+(function (root) {
+  'use strict';
+  root.SGOptUI = function (app) {
+    const S = app.S, O = root.SGOpt, L = root.SGLearn, $ = app.$, esc = app.esc;
+    const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+    const pts = (s) => (s * 100).toFixed(1);
+    const pct = (p) => Math.round(p * 100) + '%';
+    const fmtN = (n) => Math.round(n).toLocaleString('en-US');
+    const LOCAL = ['hill', 'steep', 'anneal', 'tabu'];
+    const LANE_COLOR = ['#e8b13a', '#4fd5e0'];
+    const store = {
+      get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } }
+    };
+
+    // ------------------------------------------------------------------ settings
+    const DEF = { method: 'anneal', preset: 'standard', params: null, race: '', objective: 'margin', budget: 3000, T: 30, V: 200, start: 'plan', seed: 1, locks: [], challenge: '', mapX: 'spacing', mapY: 'engageRange' };
+    let os = Object.assign({}, DEF, store.get('sg-opt', {}));
+    if (!O.METHODS[os.method]) os.method = DEF.method;
+    os.params = O.cleanParams(os.method, os.params || O.methodParams(os.method, os.preset));
+    let mode = store.get('sg-mode', 'plan') === 'opt' ? 'opt' : 'plan';
+    let job = null, report = null, rate = store.get('sg-rate', 0);
+    const saveOs = () => store.set('sg-opt', os);
+
+    function challenge() { return O.CHALLENGES.find((c) => c.id === os.challenge) || null; }
+    function presetOf() {
+      const m = O.METHODS[os.method]; if (!m.presets) return 'standard';
+      for (const k of ['careful', 'standard', 'bold']) if (JSON.stringify(O.cleanParams(os.method, m.presets[k])) === JSON.stringify(os.params)) return k;
+      return 'custom';
+    }
+    function buildConfig() {
+      const ch = challenge();
+      const base = ch ? O.challengeBase(ch, app.ui.st) : S.normalize(app.ui.st);
+      return O.cleanConfig({ base, method: os.method, params: os.params, race: os.race || null, raceParams: os.race ? O.methodParams(os.race, 'standard') : null,
+        objective: os.objective, T: os.T, V: os.V, budget: ch ? ch.budget : os.budget, locks: os.locks, start: os.start, seed: os.seed, challenge: ch ? ch.id : null });
+    }
+    function estimateSecs(battles) {
+      const r = rate || (pool && pool.mode === 'workers' ? pool.workers.length * 70 : 70);
+      return battles / r;
+    }
+    function fmtSecs(s) { if (s < 90) return Math.max(1, Math.round(s)) + ' s'; return Math.round(s / 60) + ' min'; }
+
+    // --------------------------------------------------------------- panel UI
+    function renderModes() {
+      document.body.dataset.mode = mode;
+      for (const b of document.querySelectorAll('#modes [data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+    }
+    function setMode(m) { mode = m; store.set('sg-mode', m); renderModes(); if (m === 'opt') renderOpt(); }
+
+    function paramCtl(q) {
+      const v = os.params[q.k];
+      if (q.bool) return `<div class="ctl"><button class="switch" role="switch" data-opb="${q.k}" aria-checked="${!!v}"><span class="ctl-head" style="flex-direction:column;align-items:flex-start;gap:4px"><span class="lbl">${esc(q.label)}</span><span class="hint">${esc(q.hint)}</span></span><span class="knob"></span></button></div>`;
+      const p = ((v - q.min) / (q.max - q.min)) * 100;
+      return `<div class="ctl"><div class="ctl-head"><label for="op-${q.k}">${esc(q.label)}</label><output id="opo-${q.k}">${fmtParam(q, v)}</output></div>
+        <input type="range" id="op-${q.k}" data-op="${q.k}" min="${q.min}" max="${q.max}" step="${q.step}" value="${v}" style="--p:${p}%"><p class="hint">${esc(q.hint)}${refNote(q)}</p></div>`;
+    }
+    function fmtParam(q, v) {
+      if (q.k === 'lambda' && !v) return 'Auto';
+      if (q.step < 1) return (q.step < 0.05 ? v.toFixed(2) : v.toFixed(q.step < 0.1 ? 2 : q.step < 1 ? (String(q.step).split('.')[1] || '').length : 0)) + (q.label.indexOf('(points)') >= 0 ? ' pts' : '');
+      return String(v);
+    }
+    function refNote(q) { return ` <span class="refv">Reference ${q.bool ? (q.std ? 'on' : 'off') : (q.k === 'lambda' && !q.std ? 'auto' : q.std)}.</span>`; }
+
+    function renderOpt() {
+      const body = $('optBody'); if (!body) return;
+      if (!O.METHODS[os.method]) os.method = DEF.method;
+      os.params = O.cleanParams(os.method, os.params);
+      if (os.race && (!O.METHODS[os.race] || os.race === os.method)) os.race = '';
+      const m = O.METHODS[os.method], ch = challenge(), recs = store.get('sg-challenges', {});
+      const budget = ch ? ch.budget : os.budget;
+      const plans = Math.floor(budget / os.T);
+      const freeCount = O.KNOBS.length - os.locks.length;
+      const linked = os.locks.indexOf('roles') >= 0 && os.locks.indexOf('friendlyPct') < 0;
+      const pre = presetOf();
+      const chOpts = ['<option value="">Free play: your Enemy and Field settings</option>'].concat(O.CHALLENGES.map((c) => `<option value="${c.id}" ${os.challenge === c.id ? 'selected' : ''}>${esc(c.name)}${recs[c.id] && recs[c.id].win >= c.target ? ' ✓' : ''}</option>`)).join('');
+      const chHint = ch ? `${esc(ch.blurb)} Pass by winning ${pct(ch.target)} of fresh battles with ${fmtN(ch.budget)} battles of budget.${recs[ch.id] ? ` Your best: ${pct(recs[ch.id].win)} with ${esc(O.METHODS[recs[ch.id].method] ? O.METHODS[recs[ch.id].method].name : recs[ch.id].method)}.` : ''}` : 'Searches against the swarm and battlefield set on the Enemy and Field tabs.';
+      body.innerHTML = `<p class="tabnote">Pick a method and let it search for the best doctrine. Your plan from the Plan tabs is the starting point, and locked settings keep its values. <button class="linkbtn" data-learn="intro">How does this work?</button></p>
+      <div class="ctl"><div class="ctl-head"><label for="o-ch">Challenge</label></div><select id="o-ch">${chOpts}</select><p class="hint">${chHint}</p></div>
+      <div class="ctl"><div class="ctl-head"><label for="o-method">Method</label><button class="linkbtn" data-learn="${m.card}">Learn more</button></div>
+        <select id="o-method">${O.METHOD_ORDER.map((id) => `<option value="${id}" ${id === os.method ? 'selected' : ''}>${esc(O.METHODS[id].name)}</option>`).join('')}</select><p class="hint">${esc(m.short)}</p></div>
+      ${m.presets ? `<div class="ctl"><div class="ctl-head"><span class="lbl" id="l-opre">Method settings</span><output>${pre === 'custom' ? 'Custom' : pre[0].toUpperCase() + pre.slice(1)}</output></div>
+        <div class="seg" role="group" aria-labelledby="l-opre">${['careful', 'standard', 'bold'].map((k) => `<button data-opre="${k}" aria-pressed="${pre === k}">${k[0].toUpperCase() + k.slice(1)}</button>`).join('')}</div>
+        <p class="hint">Careful stays near your plan, Standard uses textbook values, Bold explores widely. <button class="linkbtn" data-learn="presets">More</button></p></div>` : ''}
+      ${m.params.map(paramCtl).join('')}
+      <div class="ctl"><div class="ctl-head"><label for="o-race">Race against</label></div><select id="o-race"><option value="">No race</option>${O.METHOD_ORDER.filter((id) => id !== os.method).map((id) => `<option value="${id}" ${os.race === id ? 'selected' : ''}>${esc(O.METHODS[id].name)} (standard)</option>`).join('')}</select>
+        <p class="hint">Both methods get the same budget, seed and battles, and share the chart. The fresh-battle score decides the winner.</p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl" id="l-oobj">Aim for</span><button class="linkbtn" data-learn="goal">Learn more</button></div>
+        <div class="seg" role="group" aria-labelledby="l-oobj">${Object.keys(O.OBJECTIVES).map((k) => `<button data-oseg="objective" data-v="${k}" aria-pressed="${os.objective === k}">${esc(O.OBJECTIVES[k].name.replace('Win rate + margin', 'Win + margin'))}</button>`).join('')}</div>
+        <p class="hint">${esc(O.OBJECTIVES[os.objective].short)}</p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl">Budget</span><output>${fmtN(budget)} battles</output></div>
+        <div class="checks">${O.BUDGETS.map((b) => `<button data-obudget="${b}" aria-pressed="${budget === b}" ${ch ? 'disabled' : ''}>${fmtN(b)}</button>`).join('')}</div>
+        <p class="hint">${ch ? 'Set by the challenge. ' : ''}About ${fmtN(plans)} plans at ${os.T} battles each, roughly ${fmtSecs(estimateSecs(budget * (os.race ? 2 : 1) + 7 * (os.T + os.V)))} on this device${os.race ? ' for both methods' : ''}. <button class="linkbtn" data-learn="budget">Learn more</button></p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl" id="l-oT">Training battles per plan</span></div>
+        <div class="seg" role="group" aria-labelledby="l-oT">${O.TRAIN_SIZES.map((n) => `<button data-oseg="T" data-v="${n}" aria-pressed="${os.T === n}">${n}</button>`).join('')}</div>
+        <p class="hint">Every plan fights the same battles. Fewer means more plans tried, but luck decides more. <button class="linkbtn" data-learn="noise">Learn more</button></p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl" id="l-oV">Fresh battles for the final check</span></div>
+        <div class="seg" role="group" aria-labelledby="l-oV">${O.FRESH_SIZES.map((n) => `<button data-oseg="V" data-v="${n}" aria-pressed="${os.V === n}">${n}</button>`).join('')}</div>
+        <p class="hint">The best plan is re-tested on battles it never saw. Not charged to the budget. <button class="linkbtn" data-learn="overfit">Learn more</button></p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl" id="l-ost">Start from</span></div>
+        <div class="seg" role="group" aria-labelledby="l-ost"><button data-oseg="start" data-v="plan" aria-pressed="${os.start === 'plan'}">Your plan</button><button data-oseg="start" data-v="random" aria-pressed="${os.start === 'random'}">A random plan</button></div></div>
+      <div class="ctl"><div class="ctl-head"><label for="o-seed">Search seed</label><button class="linkbtn" data-learn="repeat">Learn more</button></div><div class="seedrow"><input type="number" id="o-seed" inputmode="numeric" value="${os.seed}"><button class="iconbtn" id="o-newseed">New seed</button></div>
+        <p class="hint">Same seed, settings and budget repeat the same search exactly.</p></div>
+      <div class="ctl"><div class="ctl-head"><span class="lbl">What the search may change</span><output>${freeCount} of ${O.KNOBS.length}</output></div>
+        <div class="checks"><button data-olockset="all">Everything</button><button data-olockset="squad">Squad and tactics</button><button data-olockset="loadout">Loadout and air</button></div>
+        <div class="checks lockchips">${O.KNOBS.map((k) => `<button data-olock="${k.id}" aria-pressed="${os.locks.indexOf(k.id) < 0 && !(linked && k.id === 'friendlyPct')}" ${linked && k.id === 'friendlyPct' ? 'disabled' : ''}>${esc(k.label)}</button>`).join('')}</div>
+        <p class="hint">Highlighted settings are the method's to change; the rest keep your plan's values.${linked ? ' Drone roles are locked, so the drone budget is locked with them.' : ''} <button class="linkbtn" data-learn="locks">Learn more</button></p></div>`;
+      $('optStartSub').textContent = `${m.name} · ${fmtN(budget)} battles${os.race ? ' · race vs ' + O.METHODS[os.race].name : ''}`;
+    }
+
+    function bindPanel() {
+      $('modes').addEventListener('click', (e) => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.mode) setMode(b.dataset.mode);
+        else if (b.id === 'modeLearn') openLearn('intro');
+      });
+      const body = $('optBody');
+      body.addEventListener('input', (e) => {
+        const el = e.target;
+        if (el.dataset.op) {
+          const q = O.METHODS[os.method].params.find((x) => x.k === el.dataset.op);
+          os.params[q.k] = parseFloat(el.value); os.params = O.cleanParams(os.method, os.params);
+          el.style.setProperty('--p', ((el.value - q.min) / (q.max - q.min)) * 100 + '%');
+          $('opo-' + q.k).textContent = fmtParam(q, os.params[q.k]);
+          const out = body.querySelector('[aria-labelledby="l-opre"]'); if (out) { const pre = presetOf(); for (const b of out.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.opre === pre)); out.parentNode.querySelector('output').textContent = pre === 'custom' ? 'Custom' : pre[0].toUpperCase() + pre.slice(1); }
+          saveOs();
+        } else if (el.id === 'o-seed') { const v = parseInt(el.value, 10); if (v > 0) { os.seed = v >>> 0; saveOs(); } }
+      });
+      body.addEventListener('change', (e) => {
+        const el = e.target;
+        if (el.id === 'o-method') { os.method = el.value; os.params = O.methodParams(os.method, 'standard'); if (os.race === os.method) os.race = ''; saveOs(); renderOpt(); }
+        else if (el.id === 'o-race') { os.race = el.value; saveOs(); renderOpt(); }
+        else if (el.id === 'o-ch') { os.challenge = el.value; saveOs(); renderOpt(); }
+        else if (el.id === 'o-seed') renderOpt();
+      });
+      body.addEventListener('click', (e) => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.learn) { openLearn(b.dataset.learn); return; }
+        if (b.dataset.opre) { os.params = O.methodParams(os.method, b.dataset.opre); }
+        else if (b.dataset.opb) { os.params[b.dataset.opb] = os.params[b.dataset.opb] ? 0 : 1; }
+        else if (b.dataset.oseg) { const v = b.dataset.v; os[b.dataset.oseg] = b.dataset.oseg === 'T' || b.dataset.oseg === 'V' ? +v : v; }
+        else if (b.dataset.obudget) { os.budget = +b.dataset.obudget; }
+        else if (b.dataset.olockset) { os.locks = O.LOCK_SETS[b.dataset.olockset].slice(); }
+        else if (b.dataset.olock) { const id = b.dataset.olock, i = os.locks.indexOf(id); if (i >= 0) os.locks.splice(i, 1); else os.locks.push(id); }
+        else if (b.id === 'o-newseed') { os.seed = 1 + Math.floor(Math.random() * 99999); app.toast('New search seed ' + os.seed + '.'); }
+        else return;
+        saveOs(); renderOpt();
+      });
+      $('optStart').addEventListener('click', () => startSearch());
+      $('optHistory').addEventListener('click', () => openHistory());
+      $('optLoad').addEventListener('click', () => { $('runbox').hidden = false; $('runText').value = ''; $('runText').focus(); });
+      $('runClose').addEventListener('click', () => { $('runbox').hidden = true; });
+      $('runAction').addEventListener('click', () => {
+        const cfg = O.decodeRun($('runText').value);
+        if (!cfg) { app.toast('That run code could not be read. Paste the whole code, starting with o1.'); return; }
+        loadConfig(cfg); $('runbox').hidden = true;
+        app.toast('Search loaded. Start it to repeat the run exactly.');
+      });
+    }
+
+    // a run code sets the plan, battlefield and every search setting
+    function loadConfig(cfg) {
+      const keep = { quality: app.ui.st.quality, watchMode: app.ui.st.watchMode, speed: app.ui.st.speed, battles: app.ui.st.battles };
+      if (!cfg.challenge) { app.ui.st = Object.assign(S.deepClone(cfg.base), keep); app.afterPlanChange(); }
+      else { const p = S.deepClone(app.ui.st); for (const k of O.KNOBS) O.copyKnob(p, cfg.base, k); app.ui.st = S.normalize(p); app.afterPlanChange(); }
+      os = Object.assign({}, os, { method: cfg.method, params: cfg.params, race: cfg.race || '', objective: cfg.objective, budget: cfg.budget, T: cfg.T, V: cfg.V, start: cfg.start, seed: cfg.seed, locks: cfg.locks.slice(), challenge: cfg.challenge || '' });
+      if (O.TRAIN_SIZES.indexOf(os.T) < 0) os.T = cfg.T;
+      saveOs(); setMode('opt'); renderOpt();
+    }
+
+    // -------------------------------------------------------- battle scheduler
+    const resCache = new Map();
+    let pool = null, msgId = 0, mainBusy = false, simulated = 0;
+    const qHigh = [], qLow = [], pending = new Map();
+    const WORKER_MAIN = 'self.onmessage=function(e){var d=e.data;try{var out=SGOpt.runTasksSync([{settings:d.settings,indices:d.indices}])[0];self.postMessage({id:d.id,out:out});}catch(err){self.postMessage({id:d.id,error:String(err&&err.message||err)});}};self.postMessage({ready:true});';
+    async function ensurePool() {
+      if (pool) return pool;
+      pool = { workers: [], mode: 'page' };
+      if (root.__sgNoWorkers || typeof Worker === 'undefined' || typeof Blob === 'undefined') return pool;
+      try {
+        const simEl = document.getElementById('sg-sim'), optEl = document.getElementById('sg-opt');
+        if (!simEl || !optEl) return pool;
+        const url = URL.createObjectURL(new Blob([simEl.textContent + '\n' + optEl.textContent + '\n' + WORKER_MAIN], { type: 'text/javascript' }));
+        const n = clamp((navigator.hardwareConcurrency || 4) - 1, 1, 8);
+        const made = [];
+        for (let i = 0; i < n; i++) {
+          let w; try { w = new Worker(url); } catch (e) { break; }
+          made.push(new Promise((res) => {
+            const t = setTimeout(() => { try { w.terminate(); } catch (e) { /* gone */ } res(null); }, 12000);
+            w.onmessage = (e) => { if (e.data && e.data.ready) { clearTimeout(t); res(w); } };
+            w.onerror = (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); clearTimeout(t); try { w.terminate(); } catch (e) { /* gone */ } res(null); };
+          }));
+        }
+        const ws = (await Promise.all(made)).filter(Boolean);
+        pool.workers = ws.map((w) => {
+          const wk = { w, busy: false, dead: false };
+          w.onmessage = (e) => onWorkerMessage(wk, e.data);
+          w.onerror = (ev) => { if (ev && ev.preventDefault) ev.preventDefault(); onWorkerDead(wk); };
+          return wk;
+        });
+        if (pool.workers.length) pool.mode = 'workers';
+      } catch (e) { pool.mode = 'page'; }
+      return pool;
+    }
+    function onWorkerMessage(wk, d) {
+      const p = pending.get(d.id); if (!p) return;
+      pending.delete(d.id); wk.busy = false;
+      p.jb.done(d.error ? O.runTasksSync([{ settings: p.jb.st, indices: p.jb.idx }])[0] : d.out);
+      pump();
+    }
+    function onWorkerDead(wk) {
+      wk.dead = true; wk.busy = false;
+      for (const [id, p] of pending) if (p.wk === wk) { pending.delete(id); qHigh.unshift(p.jb); }
+      pool.workers = pool.workers.filter((x) => x !== wk);
+      if (!pool.workers.length) pool.mode = 'page';
+      pump();
+    }
+    function pump() {
+      if (pool && pool.mode === 'workers') {
+        for (const wk of pool.workers) {
+          if (wk.busy) continue;
+          const jb = qHigh.length ? qHigh.shift() : qLow.shift(); if (!jb) break;
+          const id = ++msgId; wk.busy = true; pending.set(id, { jb, wk });
+          wk.w.postMessage({ id, settings: jb.st, indices: jb.idx });
+        }
+      } else if (!mainBusy && (qHigh.length || qLow.length)) pageLoop();
+    }
+    const tick = () => new Promise((r) => setTimeout(r, 0));
+    async function pageLoop() {
+      mainBusy = true;
+      let t0 = performance.now();
+      while (qHigh.length || qLow.length) {
+        const jb = qHigh.length ? qHigh.shift() : qLow.shift();
+        const res = [];
+        for (const i of jb.idx) {
+          res.push(O.runTasksSync([{ settings: jb.st, indices: [i] }])[0][0]);
+          if (performance.now() - t0 > 30) { await tick(); t0 = performance.now(); }
+        }
+        jb.done(res);
+      }
+      mainBusy = false;
+    }
+    // run battles, reusing any already simulated; low priority work waits for the search
+    function runBattles(tasks, low) {
+      return new Promise((resolve) => {
+        const out = tasks.map((t) => new Array(t.indices.length));
+        let left = 0; const jobs = [];
+        tasks.forEach((t, ti) => {
+          const st = S.normalize(t.settings), k = JSON.stringify(st);
+          let m = resCache.get(k); if (!m) { m = new Map(); resCache.set(k, m); }
+          const miss = [];
+          t.indices.forEach((idx, j) => { const r = m.get(idx); if (r) out[ti][j] = r; else miss.push([idx, j]); });
+          const chunk = Math.max(2, Math.min(10, Math.ceil(miss.length / Math.max(2, (pool ? pool.workers.length : 1) * 2))));
+          for (let a = 0; a < miss.length; a += chunk) {
+            const part = miss.slice(a, a + chunk);
+            jobs.push({ st, idx: part.map((p) => p[0]), done: (res) => { part.forEach(([idx, j], q) => { out[ti][j] = res[q]; m.set(idx, res[q]); }); simulated += res.length; if (--left === 0) resolve(out); } });
+          }
+        });
+        left = jobs.length;
+        if (!left) { resolve(out); return; }
+        for (const jb of jobs) (low ? qLow : qHigh).push(jb);
+        pump();
+      });
+    }
+
+    // ------------------------------------------------------------- the search
+    async function startSearch(cfgIn) {
+      if (job) return;
+      const cfg = cfgIn ? O.cleanConfig(cfgIn) : buildConfig();
+      const s0 = O.createSearch(cfg);
+      if (s0.error) { app.toast(s0.error); return; }
+      const lanes = [s0];
+      if (cfg.race) lanes.push(O.createSearch(cfg, { method: cfg.race, params: cfg.raceParams, lane: 1 }));
+      job = { cfg, lanes, stop: false, phase: 'Scoring the reference plans', t0: performance.now(), sim0: simulated, refs: null, log: [], map: null, lastBest: [null, null] };
+      $('runbox').hidden = true;
+      app.setState('search');
+      renderSearchShell();
+      await ensurePool();
+      job.refs = O.referencePlans(cfg.base).map((r) => ({ id: r.id, name: r.name, plan: r.plan, yours: r.yours, train: null, fresh: null }));
+      const tr = await runBattles(job.refs.map((r) => O.trainTask(r.plan, cfg.T)));
+      job.refs.forEach((r, i) => { r.train = O.scoreResults(cfg.objective, tr[i]); });
+      job.phase = 'Searching';
+      job.ts = performance.now(); job.simS = simulated;
+      drawSearch();
+      while (lanes.some((s) => !s.done) && !job.stop) {
+        for (const s of lanes) {
+          if (s.done || job.stop) continue;
+          await O.stepSearch(s, runBattles);
+          afterRound(s);
+        }
+      }
+      for (const s of lanes) if (!s.done) { s.done = true; s.stopped = true; s.ended = 'stopped'; }
+      const searchSecs = (performance.now() - job.ts) / 1000, searchSim = simulated - job.simS;
+      if (!lanes[0].best) { const c = job; job = null; app.setState('command'); setMode('opt'); app.toast('Stopped before any plan was fully scored.'); return c; }
+      job.phase = 'Checking the best plan on fresh battles';
+      drawSearch();
+      const fresh = await runBattles(lanes.filter((s) => s.best).map((s) => O.freshTask(s.best.plan, cfg.V)).concat(job.refs.map((r) => O.freshTask(r.plan, cfg.V))));
+      const nl = lanes.filter((s) => s.best).length;
+      lanes.forEach((s, i) => { if (s.best) s.fresh = O.summarizeFresh(cfg.objective, fresh[i]); });
+      job.refs.forEach((r, i) => { r.fresh = O.summarizeFresh(cfg.objective, fresh[nl + i]); });
+      if (searchSim > 200 && searchSecs > 0.5) { rate = searchSim / searchSecs; store.set('sg-rate', rate); }
+      report = makeReport(job, searchSecs, searchSim);
+      const done = job; job = null;
+      saveHistory(report);
+      showResults();
+      return done;
+    }
+    function stopSearch() { if (job) { job.stop = true; job.phase = 'Stopping…'; drawSearch(); } }
+
+    let drawPending = false, lastDraw = 0;
+    function afterRound(s) {
+      if (s.best && job.lastBest[s.lane] !== s.best.key) {
+        job.lastBest[s.lane] = s.best.key;
+        const name = O.METHODS[s.methodId].name;
+        job.log.unshift({ lane: s.lane, text: `${job.lanes.length > 1 ? name + ': ' : ''}new best ${pts(s.best.score)} after ${fmtN(s.spent)} battles${s.best.desc ? ' · ' + s.best.desc : ''}` });
+        job.log.length = Math.min(job.log.length, 40);
+        if (s.lane === 0) scheduleBest3D(s.best);
+      }
+      if (!drawPending) {
+        drawPending = true;
+        const wait = Math.max(0, 250 - (performance.now() - lastDraw));
+        setTimeout(() => requestAnimationFrame(() => { drawPending = false; lastDraw = performance.now(); if (job) drawSearch(); }), wait);
+      }
+    }
+    let best3dT = 0;
+    function scheduleBest3D(best) {
+      clearTimeout(best3dT);
+      best3dT = setTimeout(() => {
+        if (app.state !== 'search') return;
+        const b = S.createBattle(best.plan, 0, null);
+        app.showBackdrop(b);
+        const sc = b.sc;
+        $('besttag').innerHTML = `<span class="label">Best plan so far</span><b>${pts(best.score)} on training battles</b><small>Shown on training battle 1 · ${esc(app.TERRAIN_NAME[sc.terrain])}, ${esc(app.TOD_NAME[sc.timeOfDay].toLowerCase())}</small>`;
+      }, 500);
+    }
+
+    function renderSearchShell() {
+      const cfg = job.cfg, names = job.lanes.map((s) => O.METHODS[s.methodId].name);
+      $('search').innerHTML = `<div class="srch">
+        <div class="srch-head"><div><span class="label" id="sLabel">${esc(names.join(' vs '))} · ${esc(O.OBJECTIVES[cfg.objective].name)}${cfg.challenge ? ' · ' + esc(challenge() ? challenge().name : '') : ''}</span><h2 id="sTitle">Getting ready</h2></div>
+          <div class="srch-btns"><button class="btn" id="sLearn">Learn</button><button class="btn" id="sStop">Stop</button></div></div>
+        <div class="prog" aria-hidden="true">${job.lanes.map((s, i) => `<i id="sProg${i}" style="background:${LANE_COLOR[i]}"></i>`).join('')}</div>
+        <div class="srch-stats" id="sStats"></div>
+        <div class="chart"><h3>Score as the budget is spent</h3><p class="cap">Each dot is a plan tried, the bright line is the best so far, and dashed lines are reference plans scored on the same training battles.</p><div class="legend" id="sLegend"></div><canvas id="sChart"></canvas></div>
+        <div class="srch-grid">
+          <div class="chart map"><h3>Landscape</h3><p class="cap" id="sMapCap"></p>${mapControls('s')}<canvas id="sMap"></canvas></div>
+          <div class="srch-side"><div class="coach" id="sCoach" aria-live="polite"></div><h3 class="loghead">New bests</h3><ol class="slog" id="sLog"></ol></div>
+        </div></div>`;
+      $('besttag').innerHTML = '';
+      $('sStop').addEventListener('click', stopSearch);
+      $('sLearn').addEventListener('click', () => openLearn(O.METHODS[job.cfg.method].card));
+      bindMapControls('s', () => job && { base: job.cfg.base, lanes: job.lanes, objective: job.cfg.objective }, () => drawSearch());
+      $('search').scrollTop = 0;
+    }
+    function drawSearch() {
+      if (!job || !$('sTitle')) return;
+      const cfg = job.cfg, lanes = job.lanes;
+      const best = lanes[0].best;
+      $('sTitle').textContent = best ? `Best so far ${pts(best.score)}` + (lanes[1] && lanes[1].best ? ` vs ${pts(lanes[1].best.score)}` : '') : job.phase;
+      lanes.forEach((s, i) => { const el = $('sProg' + i); if (el) { el.style.width = (s.spent / s.budget * 100 / lanes.length) + '%'; el.style.left = (i * 100 / lanes.length) + '%'; } });
+      const secs = job.ts ? (performance.now() - job.ts) / 1000 : 0, sim = job.simS != null ? simulated - job.simS : 0;
+      const spent = lanes.reduce((a, s) => a + s.spent, 0), budget = lanes.reduce((a, s) => a + s.budget, 0);
+      $('sStats').innerHTML = `<span><b>${fmtN(spent)}</b> of ${fmtN(budget)} battles</span><span><b>${fmtN(lanes.reduce((a, s) => a + s.evals, 0))}</b> plans tried</span><span><b>${secs > 1 ? fmtN(sim / secs) : '—'}</b> battles/s</span><span><b>${pool && pool.mode === 'workers' ? pool.workers.length + (pool.workers.length === 1 ? ' core' : ' cores') : 'page'}</b> ${esc(job.phase)}</span>`;
+      $('sLegend').innerHTML = lanes.map((s, i) => `<span><i style="background:${LANE_COLOR[i]}"></i>${esc(O.METHODS[s.methodId].name)}</span>`).join('') + '<span><i style="background:transparent;border-top:2px dashed #8796a8;height:0;border-radius:0"></i>Reference plans</span>';
+      drawConvergence($('sChart'), lanes, job.refs, false);
+      drawMap('s', { base: cfg.base, lanes, objective: cfg.objective });
+      const tips = O.coachTips(lanes[0]).slice(0, 2);
+      $('sCoach').innerHTML = tips.length ? tips.map((t) => `<p><span class="label">Coach</span> ${esc(t.text)} <button class="linkbtn" data-learn="${t.card}">Why?</button></p>`).join('') : `<p><span class="label">Coach</span> ${esc(methodStatus(lanes[0]))}</p>`;
+      $('sLog').innerHTML = job.log.map((l) => `<li style="border-left-color:${LANE_COLOR[l.lane]}">${esc(l.text)}</li>`).join('') || '<li>No plan fully scored yet.</li>';
+    }
+    function methodStatus(s) {
+      const st = s.method.stats ? s.method.stats() : {};
+      switch (s.methodId) {
+        case 'hill': case 'steep': return `Climbing. ${st.restarts || 0} restart${st.restarts === 1 ? '' : 's'} so far; ${st.stale || 0} tries since the last gain.`;
+        case 'anneal': return `Temperature ${st.temp != null ? st.temp.toFixed(1) : '—'} points; ${st.worse || 0} worse plans accepted so far, on purpose.`;
+        case 'tabu': return `${st.tabu || 0} moves on the tabu list; ${st.downhill || 0} downhill moves taken to escape hilltops.`;
+        case 'ga': return `Generation ${st.gen || 0}: ${st.diversity || 0} different plans in a population of ${st.pop || 0}.`;
+        case 'pso': return `Round ${st.it || 0}: flock spread ${st.spread != null ? (st.spread * 100).toFixed(0) : '—'}% of the map.`;
+        case 'de': return `Generation ${st.gen || 0}: ${st.replaced || 0} trials have beaten the plan they challenged.`;
+        case 'cma': return `Round ${st.gen || 0}: cloud width ${st.sigma != null ? st.sigma.toFixed(2) : '—'}, ${st.lambda} plans per round.`;
+        case 'race': return `Race ${(st.bracket || 0) + 1}, round ${(st.round || 0) + 1}: ${st.alive || 0} plans left on ${st.battles || 0} battles; ${st.cut || 0} cut so far.`;
+        default: return 'Throwing darts: every plan is random, so there is nothing to tune but the budget.';
+      }
+    }
+
+    // ------------------------------------------------------------- charts
+    function prep(cv) {
+      const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth || 300, h = cv.clientHeight || 200;
+      const W = Math.round(w * dpr), H = Math.round(h * dpr);
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+      const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+      return { g, w, h };
+    }
+    function drawConvergence(cv, lanes, refs, big) {
+      if (!cv) return;
+      const { g, w, h } = prep(cv);
+      const narrow = w < 420, L = 38, R = narrow ? 10 : 124, T = 10, B = 26;
+      const x0 = L, x1 = w - R, y0 = T, y1 = h - B;
+      const budget = Math.max(...lanes.map((s) => s.budget));
+      const vals = [];
+      for (const s of lanes) for (const r of s.history) vals.push(r.score);
+      if (refs) for (const r of refs) if (r.train != null) vals.push(r.train);
+      let lo = vals.length ? Math.min(...vals) : 0.3, hi = vals.length ? Math.max(...vals) : 0.7;
+      lo = Math.max(0, Math.floor((lo - 0.03) * 20) / 20); hi = Math.min(1, Math.ceil((hi + 0.03) * 20) / 20); if (hi - lo < 0.1) { hi = Math.min(1, lo + 0.1); }
+      const X = (v) => x0 + (v / budget) * (x1 - x0), Y = (v) => y1 - (v - lo) / (hi - lo) * (y1 - y0);
+      g.clearRect(0, 0, w, h);
+      g.font = '500 11px ' + app.css('--f-mono'); g.textBaseline = 'middle';
+      for (let v = Math.ceil(lo * 20) / 20; v <= hi + 1e-9; v += 0.05) {
+        const y = Math.round(Y(v)) + 0.5; g.strokeStyle = 'rgba(150,178,212,0.10)'; g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke();
+        if (Math.round(v * 100) % 10 === 0) { g.fillStyle = app.css('--ink-3'); g.textAlign = 'right'; g.fillText(Math.round(v * 100), x0 - 6, y); }
+      }
+      g.textAlign = 'center'; g.fillStyle = app.css('--ink-3'); g.textBaseline = 'top';
+      for (const f of [0, 0.5, 1]) g.fillText(fmtN(budget * f) + (f === 1 ? ' battles' : ''), Math.min(x1 - (f === 1 ? 30 : 0), X(budget * f)), y1 + 8);
+      // reference lines
+      if (refs) {
+        const lab = [];
+        for (const r of refs) {
+          if (r.train == null) continue;
+          const y = Y(r.train); g.strokeStyle = r.yours ? 'rgba(230,236,243,0.45)' : r.id === 'record' ? 'rgba(232,177,58,0.55)' : 'rgba(135,150,168,0.45)';
+          g.setLineDash([4, 4]); g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke(); g.setLineDash([]);
+          lab.push({ y, t: `${r.name.replace(' (your plan)', '*')} ${pts(r.train)}`, c: r.yours ? app.css('--ink-2') : r.id === 'record' ? '#e8b13a' : '#8796a8' });
+        }
+        if (!narrow) {
+          lab.sort((a, b) => a.y - b.y); for (let i = 1; i < lab.length; i++) if (lab[i].y - lab[i - 1].y < 12) lab[i].y = lab[i - 1].y + 12;
+          g.textAlign = 'left'; g.textBaseline = 'middle'; g.font = '500 10.5px ' + app.css('--f-body');
+          for (const l of lab) { g.fillStyle = l.c; g.fillText(l.t.length > 24 ? l.t.slice(0, 23) + '…' : l.t, x1 + 6, clamp(l.y, y0 + 4, y1 - 4)); }
+        }
+      }
+      // dots and best lines
+      lanes.forEach((s, li) => {
+        const col = LANE_COLOR[li];
+        for (const r of s.history) {
+          const full = r.n === s.T;
+          g.fillStyle = li === 0 ? (full ? 'rgba(200,210,224,0.42)' : 'rgba(200,210,224,0.16)') : (full ? 'rgba(79,213,224,0.45)' : 'rgba(79,213,224,0.16)');
+          g.beginPath(); g.arc(X(r.spent), Y(r.score), full ? 2.4 : 1.6, 0, Math.PI * 2); g.fill();
+        }
+        let bestV = null; g.strokeStyle = col; g.lineWidth = 2.2; g.beginPath(); let started = false;
+        for (const r of s.history) if (r.best) { const x = X(r.spent), y = Y(r.score); if (!started) { g.moveTo(x, y); started = true; } else { g.lineTo(x, Y(bestV)); g.lineTo(x, y); } bestV = r.score; }
+        if (started) { g.lineTo(X(s.spent), Y(bestV)); g.stroke(); g.fillStyle = col; g.beginPath(); g.arc(X(s.spent), Y(bestV), 4, 0, Math.PI * 2); g.fill(); }
+        g.lineWidth = 1;
+      });
+      // hover
+      app.hover(cv, (mx, my, tip) => {
+        if (mx == null) return;
+        let bestD = 24 * 24, hit = null, lane = 0;
+        lanes.forEach((s, li) => { for (const r of s.history) { const dx = X(r.spent) - mx, dy = Y(r.score) - my, d = dx * dx + dy * dy; if (d < bestD) { bestD = d; hit = r; lane = li; } } });
+        if (!hit) {
+          let near = null, nd = 7;
+          if (refs) for (const r of refs) if (r.train != null && Math.abs(Y(r.train) - my) < nd) { nd = Math.abs(Y(r.train) - my); near = r; }
+          if (near) { app.placeTip(cv, tip, mx, Y(near.train), `${esc(near.name)}<br>reference · ${pts(near.train)} on training battles`); return; }
+          tip.hidden = true; return;
+        }
+        const s = lanes[lane];
+        app.placeTip(cv, tip, X(hit.spent), Y(hit.score), `${lanes.length > 1 ? esc(O.METHODS[s.methodId].name) + '<br>' : ''}Plan ${hit.i} · score ${pts(hit.score)}${hit.n < s.T ? ` on ${hit.n} battles` : ''}${hit.best ? ' · new best' : ''}<br>${esc((hit.meta && hit.meta.desc) || '')}`);
+      });
+    }
+
+    // landscape map: a 9 × 9 slice through two number settings
+    const mapCache = new Map();
+    function mapControls(p) {
+      const opt = (sel) => O.MAP_KNOBS.map((k) => `<option value="${k.id}" ${k.id === sel ? 'selected' : ''}>${esc(k.label)}</option>`).join('');
+      return `<div class="mapctl"><label class="sr" for="${p}MapX">Across</label><select id="${p}MapX" aria-label="Setting across">${opt(os.mapX)}</select><span>×</span><label class="sr" for="${p}MapY">Up</label><select id="${p}MapY" aria-label="Setting up">${opt(os.mapY)}</select><button class="iconbtn" id="${p}MapGo">Draw map</button></div>`;
+    }
+    function mapKey(base, objective) { return JSON.stringify([O.planKey(base), base.seed, base.droneCount, base.mix, base.scenarioMode, base.terrain, base.timeOfDay, base.trees, os.mapX, os.mapY, objective]); }
+    function bindMapControls(p, getCtx, redraw) {
+      const ch = () => { const x = $(p + 'MapX').value, y = $(p + 'MapY').value; if (x === y) { app.toast('Pick two different settings.'); return; } os.mapX = x; os.mapY = y; saveOs(); redraw(); };
+      $(p + 'MapX').addEventListener('change', ch); $(p + 'MapY').addEventListener('change', ch);
+      $(p + 'MapGo').addEventListener('click', async () => {
+        const c = getCtx(); if (!c) return;
+        if (os.mapX === os.mapY) { app.toast('Pick two different settings.'); return; }
+        const key = mapKey(c.base, c.objective); if (mapCache.has(key) && mapCache.get(key).scores) { redraw(); return; }
+        const grid = O.landscapePlans(c.base, os.mapX, os.mapY, 9);
+        const entry = { grid, scores: null, busy: true }; mapCache.set(key, entry);
+        $(p + 'MapGo').disabled = true; $(p + 'MapGo').textContent = 'Drawing…'; redraw();
+        await ensurePool();
+        const res = await runBattles(grid.plans.map((g) => O.trainTask(g.plan, 12)), true);
+        entry.scores = res.map((r) => O.scoreResults(c.objective, r)); entry.busy = false;
+        const b = $(p + 'MapGo'); if (b) { b.disabled = false; b.textContent = 'Draw map'; }
+        redraw();
+      });
+    }
+    function drawMap(p, c) {
+      const cv = $(p + 'Map'); if (!cv) return;
+      const { g, w } = prep(cv);
+      const KX = O.KNOB[os.mapX], KY = O.KNOB[os.mapY];
+      const entry = mapCache.get(mapKey(c.base, c.objective));
+      const L = 46, R = 12, T = 8, B = 34, size = Math.min(w - L - R, (cv.clientHeight || 300) - T - B);
+      const x0 = L, y0 = T, x1 = x0 + size, y1 = y0 + size, cell = size / 9;
+      g.clearRect(0, 0, cv.width, cv.height);
+      const cap = $(p + 'MapCap');
+      if (entry && entry.scores) {
+        const lo = Math.min(...entry.scores), hi = Math.max(...entry.scores);
+        entry.grid.plans.forEach((pl, k) => { g.fillStyle = heat((entry.scores[k] - lo) / Math.max(1e-6, hi - lo)); g.fillRect(x0 + pl.i * cell, y1 - (pl.j + 1) * cell, cell + 0.5, cell + 0.5); });
+        if (cap) cap.textContent = `Bright = high score (${pts(lo)} to ${pts(hi)}), from 12 battles per cell with every other setting at the starting plan, so some of the pattern is luck. Not charged to the budget.`;
+      } else {
+        g.fillStyle = 'rgba(22,33,47,0.7)'; g.fillRect(x0, y0, size, size);
+        g.strokeStyle = 'rgba(150,178,212,0.08)'; for (let i = 1; i < 9; i++) { g.beginPath(); g.moveTo(x0 + i * cell, y0); g.lineTo(x0 + i * cell, y1); g.moveTo(x0, y0 + i * cell); g.lineTo(x1, y0 + i * cell); g.stroke(); }
+        if (cap) cap.textContent = entry && entry.busy ? 'Drawing the hills: 81 plans on 12 battles each, not charged to the budget…' : 'Where the search has been, on two settings. Draw the map to see the hills underneath (about 1,000 battles, not charged to the budget).';
+      }
+      g.strokeStyle = 'rgba(150,178,212,0.35)'; g.strokeRect(x0 + 0.5, y0 + 0.5, size, size);
+      g.fillStyle = app.css('--ink-3'); g.font = '500 10.5px ' + app.css('--f-mono'); g.textBaseline = 'top'; g.textAlign = 'left';
+      g.fillText(O.fmtValue(KX, KX.min), x0, y1 + 5); g.textAlign = 'right'; g.fillText(O.fmtValue(KX, KX.max), x1, y1 + 5);
+      g.textAlign = 'center'; g.fillStyle = app.css('--ink-2'); g.font = '600 11px ' + app.css('--f-display'); g.fillText(KX.label + ' →', (x0 + x1) / 2, y1 + 18);
+      g.save(); g.translate(14, (y0 + y1) / 2); g.rotate(-Math.PI / 2); g.fillText(KY.label + ' →', 0, -4); g.restore();
+      g.font = '500 10.5px ' + app.css('--f-mono'); g.fillStyle = app.css('--ink-3'); g.textAlign = 'right'; g.textBaseline = 'middle';
+      g.fillText(O.fmtValue(KY, KY.min).replace(/ ?(m|%|×)$/, ''), x0 - 4, y1 - 6); g.fillText(O.fmtValue(KY, KY.max).replace(/ ?(m|%|×)$/, ''), x0 - 4, y0 + 6);
+      const PX = (pl) => x0 + ((pl[KX.key] - KX.min) / (KX.max - KX.min)) * (size - cell) + cell / 2;
+      const PY = (pl) => y1 - ((pl[KY.key] - KY.min) / (KY.max - KY.min)) * (size - cell) - cell / 2;
+      const jit = (i) => ((i * 0.618034) % 1 - 0.5) * cell * 0.5;
+      c.lanes.forEach((s, li) => {
+        const col = LANE_COLOR[li], hist = s.history, n = hist.length;
+        const plan = (r) => s.cache.get(r.key).plan;
+        if (LOCAL.indexOf(s.methodId) >= 0) {
+          g.strokeStyle = li === 0 ? 'rgba(255,240,205,0.85)' : 'rgba(150,240,248,0.85)'; g.lineWidth = 1.6; g.beginPath(); let st = false;
+          for (const r of hist) if (r.acc) { const pl = plan(r), x = PX(pl), y = PY(pl); if (!st) { g.moveTo(x, y); st = true; } else g.lineTo(x, y); }
+          g.stroke(); g.lineWidth = 1;
+          hist.forEach((r, i) => { if (r.acc) return; const pl = plan(r); g.fillStyle = 'rgba(200,210,224,0.25)'; g.beginPath(); g.arc(PX(pl) + jit(i), PY(pl) + jit(i + 7), 1.8, 0, Math.PI * 2); g.fill(); });
+        } else {
+          hist.forEach((r, i) => { const pl = plan(r), age = (i + 1) / n; g.fillStyle = li === 0 ? `rgba(255,236,190,${0.08 + 0.55 * age})` : `rgba(140,236,246,${0.08 + 0.55 * age})`; g.beginPath(); g.arc(PX(pl) + jit(i), PY(pl) + jit(i + 7), r.n < s.T ? 1.6 : 2.4, 0, Math.PI * 2); g.fill(); });
+          if (s.methodId === 'pso' && s.method.positions) for (const x of s.method.positions) { const pl = s.ctx.decode(x); g.fillStyle = col; g.beginPath(); g.arc(PX(pl), PY(pl), 3.6, 0, Math.PI * 2); g.fill(); }
+        }
+        if (s.best) { const pl = s.best.plan; g.strokeStyle = col; g.lineWidth = 2.4; g.beginPath(); g.arc(PX(pl), PY(pl), 7, 0, Math.PI * 2); g.stroke(); g.lineWidth = 1; }
+      });
+      const locked = c.lanes[0].freeSet && (!c.lanes[0].freeSet.has(os.mapX) || !c.lanes[0].freeSet.has(os.mapY));
+      if (locked) { g.fillStyle = 'rgba(6,9,14,0.75)'; g.fillRect(x0 + 8, y0 + 8, size - 16, 34); g.fillStyle = app.css('--ink-2'); g.font = '500 12px ' + app.css('--f-body'); g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('One of these settings is locked, so the search stays on one line.', x0 + size / 2, y0 + 25); }
+    }
+    function heat(t) {
+      const stops = [[16, 32, 51], [26, 92, 104], [52, 160, 150], [232, 177, 58], [255, 226, 150]];
+      const f = clamp(t, 0, 1) * (stops.length - 1), i = Math.min(stops.length - 2, Math.floor(f)), u = f - i;
+      const c = stops[i].map((v, k) => Math.round(v + (stops[i + 1][k] - v) * u));
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    // ------------------------------------------------------------- results
+    function makeReport(j, secs, sim) {
+      const cfg = j.cfg;
+      const lanes = j.lanes.map((s) => ({ s, methodId: s.methodId, name: O.METHODS[s.methodId].name, best: s.best, fresh: s.fresh, top: O.topPlans(s, 5), tips: O.coachTips(s, s.fresh).filter((t) => t.id !== 'temp'), stopped: !!s.stopped }));
+      const ch = cfg.challenge ? O.CHALLENGES.find((c) => c.id === cfg.challenge) : null;
+      const rep = { cfg, code: O.encodeRun(cfg), lanes, refs: j.refs, secs, sim, rate: secs > 0 ? sim / secs : 0, when: Date.now(), challenge: ch, workers: pool && pool.mode === 'workers' ? pool.workers.length : 0 };
+      if (ch) {
+        const win = lanes[0].fresh.win, recs = store.get('sg-challenges', {});
+        rep.pass = win >= ch.target;
+        if (!recs[ch.id] || win > recs[ch.id].win) { recs[ch.id] = { win, method: cfg.method, code: rep.code, when: rep.when }; store.set('sg-challenges', recs); rep.record = true; }
+      }
+      return rep;
+    }
+    function saveHistory(rep) {
+      const h = store.get('sg-opt-history', []);
+      h.unshift({ when: rep.when, method: rep.cfg.method, race: rep.cfg.race, objective: rep.cfg.objective, budget: rep.cfg.budget, T: rep.cfg.T, V: rep.cfg.V, seed: rep.cfg.seed,
+        train: rep.lanes[0].best.score, fresh: rep.lanes[0].fresh.score, win: rep.lanes[0].fresh.win, raceWin: rep.lanes[1] && rep.lanes[1].fresh ? rep.lanes[1].fresh.win : null, challenge: rep.cfg.challenge, code: rep.code, stopped: rep.lanes[0].stopped });
+      store.set('sg-opt-history', h.slice(0, 20));
+    }
+
+    function showResults() {
+      if (!report) return;
+      const r = report, cfg = r.cfg, A = r.lanes[0], obj = O.OBJECTIVES[cfg.objective].name;
+      const luck = Math.round((A.best.score - A.fresh.score) * 100);
+      const yours = r.refs.find((x) => x.yours);
+      const rows = [{ name: 'Best found: ' + A.name, plan: A.best.plan, train: A.best.score, fresh: A.fresh, hl: 0 }];
+      if (r.lanes[1] && r.lanes[1].best) rows.push({ name: 'Best found: ' + r.lanes[1].name, plan: r.lanes[1].best.plan, train: r.lanes[1].best.score, fresh: r.lanes[1].fresh, hl: 1 });
+      for (const x of r.refs) rows.push({ name: x.name, plan: x.plan, train: x.train, fresh: x.fresh, ref: x.id });
+      rows.sort((a, b) => b.fresh.win - a.fresh.win || b.fresh.score - a.fresh.score);
+      const diff = O.diffPlans(cfg.base, A.best.plan);
+      const raceLine = r.lanes[1] ? (() => { const B = r.lanes[1]; const d = A.fresh.score - B.fresh.score; const tie = Math.abs(A.fresh.win - B.fresh.win) < (A.fresh.hi - A.fresh.lo) / 2; return `<div class="card wide"><span class="label">Race result</span><b>${tie ? 'Too close to call' : esc((d >= 0 ? A : B).name) + ' wins'}</b><small>${esc(A.name)} ${pct(A.fresh.win)} vs ${esc(B.name)} ${pct(B.fresh.win)} on the same ${cfg.V} fresh battles${tie ? '; the gap is inside the 95% intervals' : ''}.</small></div>`; })() : '';
+      const chLine = r.challenge ? `<div class="card wide ${r.pass ? 'pass' : 'fail'}"><span class="label">Challenge · ${esc(r.challenge.name)}</span><b>${r.pass ? 'Passed' : 'Not yet'}</b><small>Target ${pct(r.challenge.target)} of fresh battles won; this search reached ${pct(A.fresh.win)}.${r.record ? ' New personal best.' : ''}</small></div>` : '';
+      $('optres').innerHTML = `<div class="aar">
+        <div class="aar-head"><div>
+          <span class="label">Search report · ${esc(r.lanes.map((x) => x.name).join(' vs '))} · ${esc(obj)} · seed ${cfg.seed}${A.stopped ? ' · stopped early' : ''}</span>
+          <h2>Best plan wins <em class="${A.fresh.win >= 0.5 ? '' : 'bad'}">${pct(A.fresh.win)}</em> of fresh battles</h2>
+          <p>It scored ${pts(A.best.score)} on the ${cfg.T} training battles and ${pts(A.fresh.score)} on ${cfg.V} fresh ones, a luck bonus of ${luck} point${Math.abs(luck) === 1 ? '' : 's'}. ${yours ? `Your starting plan won ${pct(yours.fresh.win)} of the same fresh battles.` : ''}</p>
+        </div><div class="aar-actions">
+          <button class="btn primary" id="rUse">Use this plan</button><button class="btn" id="rWatch">Watch it fight</button><button class="btn" id="rAgain">Run again</button><button class="btn" id="rCode">Copy run code</button><button class="btn" id="rEdit">Edit search</button><button class="btn" id="rHist">History</button>
+        </div></div>
+        <div class="cards">${chLine}${raceLine}
+          <div class="card"><span class="label">Fresh win rate</span><b style="color:var(${A.fresh.win >= 0.5 ? '--squad-hi' : '--swarm-hi'})">${pct(A.fresh.win)}</b><small>${pct(A.fresh.lo)}–${pct(A.fresh.hi)} at 95% · ${cfg.V} battles</small></div>
+          <div class="card"><span class="label">Score: training → fresh</span><b>${pts(A.best.score)} → ${pts(A.fresh.score)}</b><small>${esc(obj)}</small></div>
+          <div class="card"><span class="label">Luck bonus</span><b>${luck} pts</b><small>${luck >= 8 ? 'large: part of the training score was luck' : 'normal'}</small></div>
+          <div class="card"><span class="label">Budget spent</span><b>${fmtN(A.s.spent)}</b><small>battles · ${fmtN(A.s.evals)} plans tried</small></div>
+          <div class="card"><span class="label">Time</span><b>${fmtSecs(r.secs)}</b><small>${fmtN(r.rate)} battles/s on ${r.workers ? r.workers + (r.workers === 1 ? ' core' : ' cores') : 'the page'}</small></div>
+        </div>
+        <div class="tips">${A.tips.map((t) => `<p><span class="label">Coach</span> ${esc(t.text)} <button class="linkbtn" data-learn="${t.card}">Why?</button></p>`).join('')}</div>
+        <div class="charts">
+          <div class="chart wide"><h3>Score as the budget was spent</h3><p class="cap">Dots are plans tried; the bright line is the best so far; dashed lines are reference plans on the same training battles${r.refs.some((x) => x.yours && x.id !== 'yours') ? ' (* marks your plan)' : ''}. Hover for details.</p><div class="legend">${r.lanes.map((x, i) => `<span><i style="background:${LANE_COLOR[i]}"></i>${esc(x.name)}</span>`).join('')}</div><canvas id="rChart"></canvas></div>
+          <div class="chart map"><h3>Where the search went</h3><p class="cap" id="rMapCap"></p>${mapControls('r')}<canvas id="rMap"></canvas></div>
+          <div class="tbl"><h3>What changed from your plan</h3>${diff.length ? `<div class="scroll"><table><thead><tr><th>Setting</th><th>Your plan</th><th>Best plan</th></tr></thead><tbody>${diff.map((d) => `<tr><td>${esc(d.label)}</td><td class="wrap">${esc(d.from)}</td><td class="wrap"><b>${esc(d.to)}</b></td></tr>`).join('')}</tbody></table></div>` : '<p class="hint">Nothing: no plan beat your starting plan on the training battles.</p>'}</div>
+        </div>
+        <div class="tbl"><h3>Compared on the same battles</h3><div class="scroll"><table><thead><tr><th>Plan</th><th class="n">Training</th><th class="n">Fresh score</th><th class="n">Fresh win</th><th>95% interval</th><th></th></tr></thead><tbody>
+            ${rows.map((x, i) => `<tr class="${x.hl != null ? 'hl' + x.hl : ''}"><td>${esc(x.name)}</td><td class="n">${pts(x.train)}</td><td class="n">${pts(x.fresh.score)}</td><td class="n">${pct(x.fresh.win)}</td><td><div class="minibar"><i style="width:${x.fresh.win * 100}%"></i><u style="left:${x.fresh.lo * 100}%;width:${(x.fresh.hi - x.fresh.lo) * 100}%"></u></div></td><td><button class="replay" data-use="${i}">Use</button></td></tr>`).join('')}
+          </tbody></table></div><p class="hint">Training = ${esc(obj.toLowerCase())} on the ${cfg.T} training battles. Fresh = ${cfg.V} battles no plan trained on${r.challenge ? ', on the challenge battlefield' : ''}.</p></div>
+        <div class="tbl"><h3>Top plans found</h3><div class="scroll"><table><thead><tr><th>#</th><th class="n">Training</th><th>Differences from the best</th><th></th></tr></thead><tbody>
+            ${A.top.map((t, i) => { const d = i === 0 ? [] : O.diffPlans(A.best.plan, t.plan); return `<tr><td class="n">${i + 1}</td><td class="n">${pts(t.score)}</td><td class="wrap">${i === 0 ? 'The best plan' : esc(d.slice(0, 3).map((x) => `${x.label}: ${x.to}`).join('; ')) + (d.length > 3 ? ` (+${d.length - 3} more)` : '')}</td><td><button class="replay" data-top="${i}">Use</button> <button class="replay" data-topw="${i}">Watch</button></td></tr>`; }).join('')}
+          </tbody></table></div></div>
+        <div class="tbl"><h3>The best plan in full</h3><div class="plangrid">${O.describePlan(A.best.plan).map((d) => `<div><span class="label">${esc(d.label)}</span><span>${esc(d.value)}</span></div>`).join('')}</div></div>
+        <div class="sharebox" id="rCodeBox" hidden><label class="label" for="rCodeText">Run code: paste it into Load run code to repeat this search</label><textarea id="rCodeText" spellcheck="false" readonly></textarea></div>
+      </div>`;
+      app.setState('optresults');
+      $('optres').scrollTop = 0;
+      $('rUse').addEventListener('click', () => adopt(A.best.plan));
+      $('rWatch').addEventListener('click', () => watch(A.best.plan));
+      $('rAgain').addEventListener('click', () => startSearch(cfg));
+      $('rEdit').addEventListener('click', () => { app.setState('command'); setMode('opt'); });
+      $('rHist').addEventListener('click', () => openHistory());
+      $('rCode').addEventListener('click', () => app.copyText(r.code, () => app.toast('Run code copied.'), () => { $('rCodeBox').hidden = false; $('rCodeText').value = r.code; $('rCodeText').select(); app.toast('Select the run code below and copy it.'); }));
+      $('optres').onclick = (e) => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.learn) openLearn(b.dataset.learn);
+        else if (b.dataset.use != null) adopt(rows[+b.dataset.use].plan);
+        else if (b.dataset.top != null) adopt(A.top[+b.dataset.top].plan);
+        else if (b.dataset.topw != null) watch(A.top[+b.dataset.topw].plan);
+      };
+      const ctx = () => ({ base: cfg.base, lanes: r.lanes.map((x) => x.s), objective: cfg.objective });
+      bindMapControls('r', ctx, () => drawMap('r', ctx()));
+      requestAnimationFrame(() => { drawConvergence($('rChart'), r.lanes.map((x) => x.s), r.refs, true); drawMap('r', ctx()); });
+    }
+    function adopt(plan) {
+      const p = S.deepClone(app.ui.st); for (const k of O.KNOBS) O.copyKnob(p, plan, k);
+      const n = O.diffPlans(app.ui.st, p).length;
+      app.ui.st = S.normalize(p); app.afterPlanChange();
+      app.setState('command'); setMode('plan');
+      app.toast(n ? `Plan loaded: ${n} setting${n === 1 ? '' : 's'} changed. Deploy to watch it, or tune it by hand.` : 'That is already your plan.');
+    }
+    function watch(plan) {
+      const st = O.freshSettings(plan);
+      st.battles = report ? report.cfg.V : 200; st.watchMode = 'first'; st.speed = app.ui.st.speed; st.quality = app.ui.st.quality;
+      app.deployWith(st);
+    }
+
+    // ------------------------------------------------------------- history
+    function openHistory() {
+      const h = store.get('sg-opt-history', []);
+      const sorted = h.map((x, i) => Object.assign({ i }, x)).sort((a, b) => b.win - a.win);
+      $('hist').innerHTML = `<div class="dlg" role="dialog" aria-modal="true" aria-labelledby="histTitle"><div class="dlg-head"><h2 id="histTitle">Search history</h2><button class="btn" id="hClose">Close</button></div>
+        ${sorted.length ? `<div class="scroll"><table><thead><tr><th>Method</th><th>Aim</th><th class="n">Budget</th><th class="n">Training</th><th class="n">Fresh win</th><th>When</th><th></th></tr></thead><tbody>
+        ${sorted.map((x) => `<tr><td>${esc(O.METHODS[x.method] ? O.METHODS[x.method].name : x.method)}${x.race ? ' vs ' + esc(O.METHODS[x.race].name) : ''}${x.challenge ? ' · ' + esc((O.CHALLENGES.find((c) => c.id === x.challenge) || {}).name || '') : ''}${x.stopped ? ' · stopped' : ''}</td><td>${esc(O.OBJECTIVES[x.objective].name)}</td><td class="n">${fmtN(x.budget)}</td><td class="n">${pts(x.train)}</td><td class="n">${pct(x.win)}</td><td>${new Date(x.when).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td><td><button class="replay" data-hload="${x.i}">Load</button> <button class="replay" data-hrun="${x.i}">Run again</button></td></tr>`).join('')}
+        </tbody></table></div>` : '<p class="hint">No searches yet. Finished searches appear here with their run codes, best first.</p>'}</div>`;
+      $('hist').hidden = false;
+      $('hClose').focus();
+      $('hist').onclick = (e) => {
+        if (e.target === $('hist')) { $('hist').hidden = true; return; }
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.id === 'hClose') { $('hist').hidden = true; return; }
+        const x = h[+(b.dataset.hload != null ? b.dataset.hload : b.dataset.hrun)]; if (!x) return;
+        const cfg = O.decodeRun(x.code); if (!cfg) return;
+        $('hist').hidden = true;
+        if (b.dataset.hrun != null) startSearch(cfg);
+        else { loadConfig(cfg); app.setState('command'); app.toast('Search loaded from history.'); }
+      };
+    }
+
+    // ------------------------------------------------------------- learn
+    function card(c) {
+      return `<article class="lcard" id="learn-${c.id}"><h3>${esc(c.title)}</h3>${c.picture ? `<p class="pic">${esc(c.picture)}</p>` : ''}${c.body.map((p) => `<p>${p}</p>`).join('')}${c.example ? `<p class="ex"><span class="label">In the game</span> ${esc(c.example)}</p>` : ''}</article>`;
+    }
+    function methodCard(id) {
+      const m = L.methods[id], meta = O.METHODS[id];
+      return `<article class="lcard" id="learn-${id}"><h3>${esc(m.title)}</h3><p class="pic">${esc(m.picture)}</p>
+        <h4>How it works</h4><ol>${m.how.map((x) => `<li>${esc(x)}</li>`).join('')}</ol>
+        <h4>Its settings</h4><div class="lset">${m.settings.map((x) => `<div><b>${esc(x.name)}</b> <span class="refv">Reference: ${esc(x.ref)}</span><p>${esc(x.what)}</p>${x.up ? `<p><span class="updown">Turn up:</span> ${esc(x.up)}</p>` : ''}${x.down ? `<p><span class="updown">Turn down:</span> ${esc(x.down)}</p>` : ''}</div>`).join('')}</div>
+        ${meta.presets ? `<p class="hint">Presets: ${['careful', 'standard', 'bold'].map((k) => `${k[0].toUpperCase() + k.slice(1)} ${Object.keys(meta.presets[k]).map((q) => { const P = meta.params.find((z) => z.k === q); return P ? `${P.label.replace(/ \(.*\)/, '').toLowerCase()} ${P.bool ? (meta.presets[k][q] ? 'on' : 'off') : (q === 'lambda' && !meta.presets[k][q] ? 'auto' : meta.presets[k][q])}` : ''; }).filter(Boolean).join(', ')}`).join(' · ')}.</p>` : ''}
+        <h4>When it shines</h4><p>${esc(m.shines)}</p><h4>Watch out for</h4><p>${esc(m.warning)}</p>
+        <p class="ex"><span class="label">Try this</span> ${esc(m.tryThis)}</p>
+        ${benchLine(id)}
+        <button class="btn" data-pick="${id}">Use ${esc(meta.name)}</button></article>`;
+    }
+    function benchLine(id) {
+      const rows = L.bench && L.bench.rows; if (!rows) return '';
+      const i = rows.findIndex((x) => x.method === id); if (i < 0) return '';
+      const x = rows[i];
+      return `<p class="ex bench"><span class="label">In our tests</span> Ranked ${i + 1} of ${rows.length}: its best plans won ${pct(x.win)} of fresh battles on average (${pct(x.min)} to ${pct(x.max)} across seeds), starting from Hold the Ring, which wins ${pct(L.bench.ringWin)}. <button class="linkbtn" data-lgo="bench">See all results</button></p>`;
+    }
+    function chooseSvg() {
+      const box = (x, y, w, h, t, sub, hot) => `<g><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="8" fill="${hot ? 'rgba(232,177,58,0.14)' : 'none'}" stroke="${hot ? '#e8b13a' : 'rgba(150,178,212,0.5)'}" stroke-width="${hot ? 2 : 1.25}"/><text x="${x}" y="${sub ? y - 4 : y + 4}" text-anchor="middle" font-weight="600" fill="#e6ecf3">${t}</text>${sub ? `<text x="${x}" y="${y + 13}" text-anchor="middle" font-size="11.5" fill="#a4b3c5">${sub}</text>` : ''}</g>`;
+      const dia = (x, y, hw, hh, t) => `<g><polygon points="${x - hw},${y} ${x},${y - hh} ${x + hw},${y} ${x},${y + hh}" fill="none" stroke="rgba(150,178,212,0.5)" stroke-width="1.25"/><text x="${x}" y="${y + 4}" text-anchor="middle" fill="#e6ecf3">${t}</text></g>`;
+      const ln = (d) => `<path d="${d}" fill="none" stroke="rgba(150,178,212,0.6)" stroke-width="1.25" marker-end="url(#lArrow)"/>`;
+      const lb = (x, y, t, a) => `<text x="${x}" y="${y}" font-size="11.5" fill="#a4b3c5" text-anchor="${a || 'middle'}">${t}</text>`;
+      return `<svg viewBox="0 0 760 472" role="img" aria-label="Start with a baseline, then let your situation pick the method" font-size="13" font-family="Barlow, sans-serif">
+        <defs><marker id="lArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="rgba(150,178,212,0.7)"/></marker></defs>
+        ${box(380, 40, 320, 44, 'Run Random search once: your baseline', '', true)}
+        ${ln('M380 62V88')}${dia(380, 124, 130, 36, 'Under 20 battles per plan?')}${ln('M510 124H560')}${box(648, 124, 176, 64, 'Racing', 'spends battles on the best')}
+        ${lb(535, 114, 'yes')}${ln('M380 160V188')}${lb(390, 178, 'no', 'start')}
+        ${dia(380, 224, 140, 36, 'Only polishing a plan you like?')}
+        ${ln('M240 224H190V290')}${lb(215, 216, 'yes')}${ln('M520 224H570V290')}${lb(545, 216, 'no')}
+        ${box(190, 318, 200, 56, 'Annealing or Tabu search', 'stay near your plan')}${dia(570, 324, 120, 34, 'Budget 3,000 or more?')}
+        <path d="M570 358V378M476 378H656" fill="none" stroke="rgba(150,178,212,0.6)" stroke-width="1.25"/>
+        ${ln('M476 378V396')}${ln('M656 378V396')}${lb(484, 392, 'yes', 'start')}${lb(664, 392, 'no', 'start')}
+        ${box(476, 426, 160, 56, 'CMA-ES', 'best in our tests')}${box(656, 426, 160, 56, 'Genetic algorithm', 'or Particle swarm')}
+        ${lb(190, 380, 'Under 1,000 battles, luck decides most:', 'middle')}${lb(190, 396, 'polish rather than search.', 'middle')}
+      </svg>`;
+    }
+    function benchTable() {
+      if (!L.bench || !L.bench.rows) return '';
+      const b = L.bench;
+      return `<article class="lcard" id="learn-bench"><h3>How the methods did in our tests</h3><p>${esc(b.note)}</p><div class="scroll"><table><thead><tr><th>Method</th><th class="n">Fresh win rate</th><th class="n">Range over seeds</th><th class="n">Luck bonus</th></tr></thead><tbody>
+        ${b.rows.map((x) => `<tr><td>${esc(O.METHODS[x.method].name)}</td><td class="n">${pct(x.win)}</td><td class="n">${pct(x.min)}–${pct(x.max)}</td><td class="n">${x.luck.toFixed(1)} pts</td></tr>`).join('')}
+        </tbody></table></div><p class="hint">${esc(b.refs)}</p></article>`;
+    }
+    function renderLearn() {
+      const nav = [['intro', 'Start here'], ...L.concepts.map((c) => [c.id, c.title]), ['choose', 'Choosing a method'], ...O.METHOD_ORDER.map((id) => [id, O.METHODS[id].name]), ['bench', 'Test results'], ['glossary', 'Glossary']].filter(([id]) => id !== 'bench' || (L.bench && L.bench.rows));
+      $('learn').innerHTML = `<div class="learn-wrap"><div class="learn-head"><div><span class="label">Learn</span><h2>Optimization, in plain words</h2></div><button class="btn" id="lClose">Close</button></div>
+        <div class="learn-body"><nav class="learn-nav" aria-label="Learn topics">${nav.map(([id, t]) => `<button data-lgo="${id}">${esc(t)}</button>`).join('')}</nav>
+        <div class="learn-main" id="learnMain">
+          <article class="lcard" id="learn-intro"><h3>${esc(L.intro.title)}</h3>${L.intro.body.map((p) => `<p>${esc(p)}</p>`).join('')}</article>
+          <h3 class="lsec">The big ideas</h3>${L.concepts.map(card).join('')}
+          <article class="lcard" id="learn-choose"><h3>${esc(L.choose.title)}</h3><div class="lsvg">${chooseSvg()}</div><ul>${L.choose.rules.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></article>
+          <h3 class="lsec">The methods</h3>${O.METHOD_ORDER.map(methodCard).join('')}
+          ${benchTable()}
+          <article class="lcard" id="learn-glossary"><h3>Glossary</h3><dl>${L.glossary.map(([t, d]) => `<dt>${esc(t)}</dt><dd>${esc(d)}</dd>`).join('')}</dl></article>
+        </div></div></div>`;
+      $('lClose').addEventListener('click', closeLearn);
+      $('learn').onclick = (e) => {
+        const b = e.target.closest('button'); if (!b) return;
+        if (b.dataset.lgo) goLearn(b.dataset.lgo);
+        else if (b.dataset.pick) { os.method = b.dataset.pick; os.params = O.methodParams(os.method, 'standard'); if (os.race === os.method) os.race = ''; saveOs(); closeLearn(); if (app.state === 'command') { setMode('opt'); } app.toast(O.METHODS[os.method].name + ' selected.'); }
+      };
+    }
+    function goLearn(id) {
+      const el = document.getElementById('learn-' + id); if (!el) return;
+      const main = $('learnMain'); main.scrollTop = el.offsetTop - main.offsetTop - 8;
+      if (window.innerWidth < 900) $('learn').scrollTop = el.offsetTop - 70;
+      for (const b of document.querySelectorAll('[data-lgo]')) b.setAttribute('aria-current', String(b.dataset.lgo === id));
+    }
+    let learnBuilt = false;
+    function openLearn(id) {
+      if (!learnBuilt) { renderLearn(); learnBuilt = true; }
+      $('learn').hidden = false;
+      requestAnimationFrame(() => goLearn(id || 'intro'));
+      $('lClose').focus({ preventScroll: true });
+    }
+    function closeLearn() { $('learn').hidden = true; }
+
+    // ------------------------------------------------------------- wiring
+    bindPanel();
+    renderModes();
+    renderOpt();
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      if (!$('learn').hidden) { closeLearn(); e.stopPropagation(); return; }
+      if (!$('hist').hidden) { $('hist').hidden = true; return; }
+      if (app.state === 'search') stopSearch();
+    });
+    const h = (location.hash || '').replace(/^#/, '');
+    if (h.indexOf('o1.') === 0) { const cfg = O.decodeRun(h); if (cfg) { loadConfig(cfg); app.toast('Search loaded from the link. Press Start search to repeat it.'); } }
+
+    return {
+      get mode() { return mode; }, setMode, openLearn, closeLearn, startSearch, stopSearch, showResults, renderOpt, loadConfig,
+      get job() { return job; }, get report() { return report; }, get os() { return os; }, set os(v) { os = v; saveOs(); renderOpt(); },
+      get pool() { return pool; }, get simulated() { return simulated; }, runBattles, ensurePool, mapCache
+    };
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* =========================================================================
    MAIN — command panel, playback controller, turbo runner, debrief.
    ========================================================================= */
 (function () {
@@ -3644,11 +5645,20 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     ui.st = S.normalize(st || {});
     try { ui.preset = localStorage.getItem('sg-preset') || detectPreset(); } catch (e) { ui.preset = detectPreset(); }
   }
-  let saveT = 0;
+  let saveT = 0, savePending = false;
+  function writeSave() { savePending = false; try { localStorage.setItem('sg-settings', JSON.stringify(ui.st)); localStorage.setItem('sg-preset', ui.preset || ''); } catch (e) { /* storage unavailable */ } }
+  let lastSave = 0;
   function save() {
+    // write at once, then at most every 150 ms while a slider is dragged
+    const now = performance.now();
     clearTimeout(saveT);
-    saveT = setTimeout(() => { try { localStorage.setItem('sg-settings', JSON.stringify(ui.st)); localStorage.setItem('sg-preset', ui.preset || ''); } catch (e) { /* storage unavailable */ } }, 250);
+    if (now - lastSave > 150) { lastSave = now; writeSave(); return; }
+    savePending = true;
+    saveT = setTimeout(() => { lastSave = performance.now(); writeSave(); }, 150);
   }
+  // a reload or tab close right after a change must not lose it
+  window.addEventListener('pagehide', () => { if (savePending) { clearTimeout(saveT); writeSave(); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden && savePending) { clearTimeout(saveT); writeSave(); } });
   function encodeSetup(st) {
     const json = JSON.stringify(S.normalize(st));
     const b = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -4073,6 +6083,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
   // GAME CONTROLLER
   // ---------------------------------------------------------------------
   let rend = null;
+  let OPT = null;
   let backdrop = null;
   let state = 'command'; // command | battle | turbo | debrief
   let run = null, lastRun = null, pb = null, paused = false, speed = 1;
@@ -4086,14 +6097,17 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     $('controls').hidden = s !== 'battle';
     $('turbo').hidden = s !== 'turbo';
     $('debrief').hidden = s !== 'debrief';
+    if ($('search')) $('search').hidden = s !== 'search';
+    if ($('optres')) $('optres').hidden = s !== 'optresults';
+    if ($('besttag')) $('besttag').hidden = s !== 'search';
     if (s !== 'battle') { $('banner').hidden = true; $('lull').hidden = true; }
     if (s === 'command') { hudCommand(); $('scen').innerHTML = ''; }
   }
 
-  function deploy() {
-    const st = norm();
-    ui.st = S.deepClone(st);
-    run = { settings: st, N: st.battles, results: [], next: 0, forceTurbo: !rend || st.watchMode === 'turbo', replay: null, started: performance.now(), stopped: false };
+  function deploy(override, extra) {
+    const st = override ? S.normalize(override) : norm();
+    if (!override) ui.st = S.deepClone(st);
+    run = { settings: st, N: st.battles, results: [], next: 0, forceTurbo: !rend || st.watchMode === 'turbo', replay: null, started: performance.now(), stopped: false, fromOpt: !!(extra && extra.fromOpt) };
     speed = st.speed;
     $('feed').innerHTML = '';
     nextBattle();
@@ -4193,7 +6207,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     const sm = S.summarize(run.results);
     run.summary = sm;
     run.prev = lastRun && lastRun.summary ? { p: lastRun.summary.p, n: lastRun.summary.n, plan: lastRun.plan } : null;
-    run.plan = S.PRESETS[ui.preset] ? S.PRESETS[ui.preset].name : 'Custom plan';
+    run.plan = run.fromOpt ? 'Plan from a search' : S.PRESETS[ui.preset] ? S.PRESETS[ui.preset].name : 'Custom plan';
     lastRun = run;
     showDebrief();
   }
@@ -4219,7 +6233,9 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     else if (rend && !rend.lost) {
       // menus and reports redraw at half rate to save battery
       idleAcc += realDt;
-      if ((++idleFrame & 1) === 0) {
+      // while a search runs battles on the page itself, the backdrop redraws rarely so the battles get the time
+      const every = state === 'search' && OPT && OPT.pool && OPT.pool.mode !== 'workers' ? 8 : 2;
+      if ((++idleFrame % every) === 0) {
         if (backdrop) rend.frame(backdrop, backdrop, 0, idleAcc, idleAcc, now / 1000); else rend.idle(idleAcc);
         idleAcc = 0;
       }
@@ -4349,7 +6365,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
         <div class="aar-actions">
           <button class="btn primary" id="dRedeploy">Redeploy</button>
           <button class="btn" id="dEdit">Edit plan</button>
-          <button class="btn" id="dCsv">Copy CSV</button>
+          <button class="btn" id="dCsv">Copy CSV</button>${r.fromOpt && OPT && OPT.report ? '<button class="btn" id="dBackOpt">Back to search report</button>' : ''}
         </div>
       </div>
       <div class="cards">
@@ -4374,6 +6390,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     $('debrief').scrollTop = 0;
     $('dRedeploy').addEventListener('click', () => { ui.st = S.deepClone(lastRun.settings); deploy(); });
     $('dEdit').addEventListener('click', () => { setState('command'); renderBody(); refreshPreview(); });
+    if ($('dBackOpt')) $('dBackOpt').addEventListener('click', () => OPT.showResults());
     $('dCsv').addEventListener('click', () => {
       const csv = toCsv(lastRun.results);
       copyText(csv, () => toast(`Copied ${lastRun.results.length} rows of CSV.`), () => { $('csvBox').hidden = false; $('csvText').value = csv; $('csvText').select(); toast('Select the CSV below and copy it.'); });
@@ -4614,6 +6631,14 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     for (const t of TABS) for (const c of t.ctl) if (c.k || c.rk) CTL_BY_KEY[c.k || c.rk] = c;
     buildPips();
     renderPresets(); renderTabs(); renderBody(); bindPanel(); bindControls();
+    const app = {
+      S, R, $, esc, toast, copyText, setupCanvas, hover, placeTip, css, TERRAIN_NAME, TOD_NAME,
+      get ui() { return ui; }, get state() { return state; }, setState,
+      afterPlanChange() { ui.preset = detectPreset(); save(); renderPresets(); renderBody(); hudCommand(); schedulePreview(); },
+      showBackdrop(s) { if (rend) { rend.loadBattle(s, { keep: true }); backdrop = R.snapshot(s); } },
+      deployWith(st) { deploy(st, { fromOpt: true }); }
+    };
+    try { OPT = window.SGOptUI && window.SGOpt ? window.SGOptUI(app) : null; } catch (e) { console.warn('Optimizer unavailable', e); OPT = null; }
     try { rend = R ? R.create($('view'), { tier: pickTier() }) : null; } catch (e) { console.warn('3D unavailable', e); rend = null; }
     if (rend) {
       rend.onMode = () => updateControls();
@@ -4638,7 +6663,7 @@ body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--p
     requestAnimationFrame(loop);
   }
 
-  window.__sg = { get rend() { return rend; }, get state() { return state; }, get pb() { return pb; }, get ui() { return ui; }, get run() { return run; }, get lastRun() { return lastRun; }, get preview() { return previewInfo; }, get speed() { return speed; }, get paused() { return paused; }, get backdrop() { return backdrop; } };
+  window.__sg = { get rend() { return rend; }, get state() { return state; }, get pb() { return pb; }, get ui() { return ui; }, get run() { return run; }, get lastRun() { return lastRun; }, get preview() { return previewInfo; }, get speed() { return speed; }, get paused() { return paused; }, get backdrop() { return backdrop; }, get opt() { return OPT; } };
   const hot = window.claude && window.claude.hot;
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
