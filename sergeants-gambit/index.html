@@ -187,6 +187,14 @@ select { appearance: none; -webkit-appearance: none; background-image: linear-gr
 .sharebox { display: flex; flex-direction: column; gap: 6px; }
 .sharebox textarea { width: 100%; min-height: 64px; resize: vertical; border-radius: 8px; background: var(--raised); border: 1px solid var(--line-2); color: var(--ink); font: 12px/1.4 var(--f-mono); padding: 8px; word-break: break-all; }
 .sheet-handle { display: none; }
+.rk { margin-left: auto; margin-right: 8px; border: 1px solid var(--line-2); background: transparent; border-radius: 999px; padding: 4px 9px; font: 600 10.5px/1 var(--f-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+.rk[aria-pressed="true"] { color: var(--squad-hi); border-color: rgba(79, 213, 224, 0.5); background: rgba(33, 160, 174, 0.14); }
+.ctl.is-random select, .ctl.is-random input[type="range"], .ctl.is-random .seg { opacity: 0.55; }
+.ctl.is-random output { color: var(--ink-3); }
+.preview { position: fixed; z-index: 20; right: var(--gut-r); bottom: calc(var(--bot) + 16px); display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; border-radius: var(--r); background: var(--glass); border: 1px solid var(--line); max-width: min(360px, calc(100vw - var(--panel-w) - 48px)); pointer-events: none; }
+.preview b { font: 600 15px/1.2 var(--f-display); letter-spacing: 0.03em; }
+.preview small { font: 500 12px/1.3 var(--f-mono); color: var(--ink-2); }
+body:not([data-state="command"]) .preview { display: none; }
 
 /* ---------- battle controls ---------- */
 .controls {
@@ -263,6 +271,8 @@ th.n { text-align: right; }
 .more { margin-top: 10px; }
 .toast { position: fixed; z-index: 60; left: 50%; bottom: calc(var(--bot) + 90px); transform: translateX(-50%); padding: 10px 16px; border-radius: 999px; background: #0d1520; border: 1px solid var(--line-2); font: 500 13px/1.2 var(--f-body); color: var(--ink); opacity: 0; transition: opacity .25s; pointer-events: none; max-width: calc(100% - 32px); text-align: center; }
 .toast.on { opacity: 1; }
+/* on the command screen the plan panel takes the left side: centre toasts over the 3D view, above the preview caption */
+body[data-state="command"] .toast { left: calc(var(--panel-w) + (100vw - var(--panel-w)) / 2); bottom: calc(var(--bot) + 112px); max-width: calc(100vw - var(--panel-w) - 32px); }
 .overlay { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; background: rgba(5, 8, 13, 0.86); padding: 24px; text-align: center; }
 .overlay div { max-width: 420px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
 .overlay h2 { margin: 0; font: 700 22px/1.1 var(--f-display); letter-spacing: 0.06em; text-transform: uppercase; }
@@ -289,6 +299,9 @@ th.n { text-align: right; }
   body:not([data-state="command"]) .panel { transform: translateY(105%); }
   .panel.collapsed { height: calc(150px + var(--bot)); }
   .panel.collapsed .tabs, .panel.collapsed .panel-body, .panel.collapsed .presets, .panel.collapsed .panel-head p { display: none; }
+  .preview { top: calc(var(--top) + 10px); bottom: auto; left: var(--gut-l); right: var(--gut-r); max-width: none; }
+  /* on phones the plan sheet fills the bottom, so command-screen toasts sit under the preview caption instead of over Deploy */
+  body[data-state="command"] .toast { top: calc(var(--top) + 96px); bottom: auto; left: 50%; max-width: calc(100% - 32px); }
   .sheet-handle { display: block; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 64px; height: 24px; border: 0; background: transparent; }
   .sheet-handle::after { content: ""; display: block; width: 40px; height: 4px; border-radius: 2px; margin: 9px auto 0; background: var(--line-2); }
   .panel-head { padding-top: 22px; gap: 8px; }
@@ -329,6 +342,7 @@ th.n { text-align: right; }
 <div class="lull" id="lull" hidden>Lull · fast-forward</div>
 <canvas id="minimap" width="264" height="264" aria-label="Minimap"></canvas>
 <ol class="feed" id="feed" aria-live="polite"></ol>
+<div class="preview" id="preview" aria-live="polite"></div>
 
 <aside class="panel" id="panel" aria-label="Command">
   <button class="sheet-handle" id="sheetHandle" aria-label="Expand or collapse the command panel"></button>
@@ -681,7 +695,9 @@ th.n { text-align: right; }
       mix,
       bearings: use('bearings') ? v.bearings : st.bearings,
       bearing0: v.bearing0, spread: v.spread,
-      layoutSeed: use('cover') ? hash32(bseed, 0x1a7) : hash32(mseed, 0x1a7)
+      layoutSeed: use('cover') ? hash32(bseed, 0x1a7) : hash32(mseed, 0x1a7),
+      // sandbags face the attack bearing only when the layout is drawn per battle; a fixed layout keeps one orientation
+      coverRot: use('cover') ? v.bearing0 : (hash32(mseed, 0x2b3) / 4294967296) * TAU
     };
   }
 
@@ -735,7 +751,7 @@ th.n { text-align: right; }
 
     for (let k = 0; k < nSand; k++) {
       for (let tries = 0; tries < 24; tries++) {
-        const a = sc.bearing0 + (k / nSand) * TAU + rng.range(-0.35, 0.35), rr = rng.range(7, 12.5);
+        const a = sc.coverRot + (k / nSand) * TAU + rng.range(-0.35, 0.35), rr = rng.range(7, 12.5);
         const x = Math.cos(a) * rr, z = Math.sin(a) * rr;
         if (!clear(x, z, 1.3)) continue;
         add({ kind: 'sandbag', x, z, y: H(x, z), r: 1.3, cap: 2, dirX: Math.cos(a), dirZ: Math.sin(a), rot: a });
@@ -2768,7 +2784,8 @@ th.n { text-align: right; }
       }
     }
 
-    function loadBattle(s) {
+    function loadBattle(s, opts) {
+      const keep = opts && opts.keep;
       B = { s, nE: s.enemies.length, nF: s.friendlies.length, typeIdx: {}, typeCount: {}, wreckBase: {} };
       for (const t of droneTypes) B.typeCount[t] = 0;
       const all = s.enemies.concat(s.friendlies);
@@ -2791,8 +2808,10 @@ th.n { text-align: right; }
       soldierState = [];
       for (let i = 0; i < 11; i++) soldierState.push({ yaw: s.humans[i].yaw, gait: Math.random() * TAU, fallT: 0, prevStatus: 0, kneel: 0, skin: lin(SKIN[(s.bseed + i * 7) % SKIN.length]) });
       setSoldierColors(s);
-      cam.intro = 1; cam.tx = 0; cam.tz = 0; cam.ty = s.H(0, 0) + 1.5;
-      if (cam.mode === 'auto') { cam.yaw = Math.atan2(-s.threatX, -s.threatZ) + 0.6; }
+      if (!keep) {
+        cam.intro = 1; cam.tx = 0; cam.tz = 0; cam.ty = s.H(0, 0) + 1.5;
+        if (cam.mode === 'auto') { cam.yaw = Math.atan2(-s.threatX, -s.threatZ) + 0.6; }
+      } else cam.ty = s.H(cam.tx, cam.tz) + 1.5;
       cam.follow = cam.mode === 'follow' ? (cam.follow || { kind: 'h', idx: 0 }) : null;
     }
 
@@ -3464,6 +3483,14 @@ th.n { text-align: right; }
       setQuality, resize, loadBattle, ingest, frame, pick, project,
       setMode(m, follow) { cam.mode = m; if (m === 'follow') cam.follow = follow || cam.follow || { kind: 'h', idx: 0 }; else if (m !== 'orbit') cam.follow = null; },
       get mode() { return cam.mode; },
+      get scenario() { return B ? B.s.sc : null; },
+      // read-only probe of what is actually drawn: terrain vertex heights and prop instance counts
+      probe() {
+        const p = terrainGeo.attributes.position, pts = [];
+        for (let k = 0; k < 9; k++) { const i = Math.floor(k * (p.count - 1) / 8); pts.push([p.getX(i), p.getY(i), p.getZ(i)]); }
+        return { terrain: pts, trunks: trunks.count, caves: mouths.count, rocks: rocks.count + boulders.count, walls: walls.count, bags: bags.count };
+      },
+      get cam() { return cam; },
       get follow() { return cam.follow; },
       get lost() { return lost; },
       idle(realDt) { // slow orbit when nothing is playing
@@ -3576,22 +3603,22 @@ th.n { text-align: right; }
     ] },
     { id: 'enemy', label: 'Enemy', note: 'The swarm you are planning against.', ctl: [
       { k: 'droneCount', t: 'range', label: 'Drone count', min: 5, max: 60, step: 1, fmt: (v) => v + ' drones', hint: 'Swarm size.' },
-      { t: 'mix' },
+      { t: 'mix', rk: 'mix', label: 'Swarm mix' },
       { k: 'waves', t: 'seg', label: 'Waves', o: opt([[1, '1'], [2, '2'], [3, '3'], [4, '4']]), hint: 'Waves arrive 25 s apart.' },
-      { k: 'bearings', t: 'seg', label: 'Approach bearings', o: opt([[1, '1'], [2, '2'], [3, '3']]), hint: 'Directions the swarm attacks from.' },
+      { k: 'bearings', rk: 'bearings', t: 'seg', label: 'Approach bearings', o: opt([[1, '1'], [2, '2'], [3, '3']]), hint: 'Directions the swarm attacks from.' },
       { k: 'aggression', t: 'range', label: 'Aggression', min: 0, max: 100, step: 1, fmt: (v) => v + '%', hint: 'How quickly FPVs commit to a dive.' },
       { k: 'targetPref', t: 'select', label: 'Target preference', o: opt([['nearest', 'Nearest'], ['sergeant', 'Sergeant first'], ['weakest', 'Weakest'], ['random', 'Random']]), hint: 'Who the swarm hunts.' },
       { k: 'battery', t: 'range', label: 'Battery', min: 60, max: 300, step: 5, fmt: (v) => v + ' s', hint: 'Drones crash when it runs out. Below 40% they besiege occupied caves.' }
     ] },
-    { id: 'field', label: 'Field', note: 'These set the battlefield in Fixed mode, and any dimension you do not randomize on the Sim tab.', ctl: [
-      { k: 'terrain', t: 'select', label: 'Terrain', o: opt([['hills', 'Rolling Hills'], ['ridges', 'Jagged Ridges'], ['dunes', 'Sine Dunes'], ['crater', 'Crater Basin'], ['flat', 'Flat Ground']]), hint: 'From the original terrain runner.' },
-      { k: 'amp', t: 'range', label: 'Terrain height', min: 0, max: 15, step: 0.5, fmt: (v) => v.toFixed(1) + ' m', hint: 'Line of sight and high ground.' },
-      { k: 'freq', t: 'range', label: 'Terrain roughness', min: 1, max: 8, step: 0.5, fmt: (v) => v.toFixed(1) + '×', hint: 'Ridge frequency.' },
+    { id: 'field', label: 'Field', note: '', ctl: [
+      { k: 'terrain', rk: 'terrain', t: 'select', label: 'Terrain', o: opt([['hills', 'Rolling Hills'], ['ridges', 'Jagged Ridges'], ['dunes', 'Sine Dunes'], ['crater', 'Crater Basin'], ['flat', 'Flat Ground']]), hint: 'From the original terrain runner.' },
+      { k: 'amp', rk: 'amp', t: 'range', label: 'Terrain height', min: 0, max: 15, step: 0.5, fmt: (v) => v.toFixed(1) + ' m', hint: 'Line of sight and high ground.' },
+      { k: 'freq', rk: 'freq', t: 'range', label: 'Terrain roughness', min: 1, max: 8, step: 0.5, fmt: (v) => v.toFixed(1) + '×', hint: 'Ridge frequency.' },
       { k: 'coverDensity', t: 'seg', label: 'Cover density', o: opt([['low', 'Low'], ['medium', 'Medium'], ['high', 'High']]), hint: 'About 11, 19 or 28 rocks, ruins and sandbag walls.' },
-      { k: 'trees', t: 'seg', label: 'Trees', o: opt([['none', 'None'], ['sparse', 'Sparse'], ['groves', 'Groves'], ['forest', 'Forest']]), hint: '0, 40, 120 or 220 trees. Canopy hides soldiers and catches some bombs.' },
-      { k: 'caves', t: 'seg', label: 'Caves', o: opt([[0, '0'], [1, '1'], [2, '2'], [3, '3']]), hint: 'Rock-arch mouths on steep, high slopes. Never on dunes or flat ground.' },
-      { k: 'timeOfDay', t: 'seg', label: 'Time of day', o: opt([['dawn', 'Dawn'], ['noon', 'Noon'], ['dusk', 'Dusk'], ['night', 'Night']]), hint: 'Night costs 20% accuracy unless a spotter marks the target.' },
-      { k: 'wind', t: 'range', label: 'Wind', min: 0, max: 15, step: 0.5, fmt: (v) => v.toFixed(1) + ' m/s', hint: 'Cuts long-range and bombing accuracy.' }
+      { k: 'trees', rk: 'trees', t: 'seg', label: 'Trees', o: opt([['none', 'None'], ['sparse', 'Sparse'], ['groves', 'Groves'], ['forest', 'Forest']]), hint: '0, 40, 120 or 220 trees. Canopy hides soldiers and catches some bombs.' },
+      { k: 'caves', rk: 'caves', t: 'seg', label: 'Caves', o: opt([[0, '0'], [1, '1'], [2, '2'], [3, '3']]), hint: 'Rock-arch mouths on steep, high slopes. Never on dunes or flat ground.' },
+      { k: 'timeOfDay', rk: 'timeOfDay', t: 'seg', label: 'Time of day', o: opt([['dawn', 'Dawn'], ['noon', 'Noon'], ['dusk', 'Dusk'], ['night', 'Night']]), hint: 'Night costs 20% accuracy unless a spotter marks the target.' },
+      { k: 'wind', rk: 'wind', t: 'range', label: 'Wind', min: 0, max: 15, step: 0.5, fmt: (v) => v.toFixed(1) + ' m/s', hint: 'Cuts long-range and bombing accuracy.' }
     ] },
     { id: 'sim', label: 'Sim', note: 'How many battles, and how much of it you watch.', ctl: [
       { t: 'battles' },
@@ -3656,9 +3683,15 @@ th.n { text-align: right; }
     $('tabs').innerHTML = TABS.map((t) => `<button class="tab" role="tab" id="tab-${t.id}" data-t="${t.id}" aria-selected="${ui.tab === t.id}">${t.label}</button>`).join('');
   }
 
+  function isRandom(c) { return !!c.rk && ui.st.scenarioMode === 'random' && !!ui.st.randomize[c.rk]; }
+  function badge(c) {
+    if (!c.rk || ui.st.scenarioMode !== 'random') return '';
+    const r = isRandom(c);
+    return `<button class="rk" data-rk="${c.rk}" aria-pressed="${r}" title="${r ? 'Drawn at random each battle. Tap to fix it at the value shown.' : 'Fixed for every battle. Tap to draw it at random each battle.'}">${r ? 'Random each battle' : 'Fixed'}</button>`;
+  }
   function rangeHtml(c, v) {
     const p = ((v - c.min) / (c.max - c.min)) * 100;
-    return `<div class="ctl"><div class="ctl-head"><label for="c-${c.k}">${esc(c.label)}</label><output id="o-${c.k}">${esc(c.fmt(v))}</output></div>
+    return `<div class="ctl${isRandom(c) ? ' is-random' : ''}" id="ctl-${c.k}"><div class="ctl-head"><label for="c-${c.k}">${esc(c.label)}</label>${badge(c)}<output id="o-${c.k}">${esc(c.fmt(v))}</output></div>
       <input type="range" id="c-${c.k}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="${c.step}" value="${v}" style="--p:${p}%">
       ${c.hint ? `<p class="hint">${esc(c.hint)}</p>` : ''}</div>`;
   }
@@ -3669,10 +3702,10 @@ th.n { text-align: right; }
   function ctlHtml(c) {
     const st = ui.st;
     if (c.t === 'range') return rangeHtml(c, st[c.k]);
-    if (c.t === 'select') return `<div class="ctl"><div class="ctl-head"><label for="c-${c.k}">${esc(c.label)}</label></div>
+    if (c.t === 'select') return `<div class="ctl${isRandom(c) ? ' is-random' : ''}" id="ctl-${c.k}"><div class="ctl-head"><label for="c-${c.k}">${esc(c.label)}</label>${badge(c)}</div>
       <select id="c-${c.k}" data-k="${c.k}">${c.o.map((o) => `<option value="${o.v}" ${String(st[c.k]) === String(o.v) ? 'selected' : ''}>${esc(o.l)}</option>`).join('')}</select>
       ${c.hint ? `<p class="hint">${esc(c.hint)}</p>` : ''}</div>`;
-    if (c.t === 'seg') return `<div class="ctl"><div class="ctl-head"><span class="lbl" id="l-${c.k}">${esc(c.label)}</span></div>
+    if (c.t === 'seg') return `<div class="ctl${isRandom(c) ? ' is-random' : ''}" id="ctl-${c.k}"><div class="ctl-head"><span class="lbl" id="l-${c.k}">${esc(c.label)}</span>${badge(c)}</div>
       <div class="seg" role="group" aria-labelledby="l-${c.k}">${c.o.map((o) => `<button data-seg="${c.k}" data-v="${o.v}" aria-pressed="${String(st[c.k]) === String(o.v)}">${esc(o.l)}</button>`).join('')}</div>
       ${c.hint ? `<p class="hint">${esc(c.hint)}</p>` : ''}</div>`;
     if (c.t === 'toggle') return `<div class="ctl"><button class="switch" role="switch" id="c-${c.k}" data-tog="${c.k}" aria-checked="${!!st[c.k]}"><span class="ctl-head" style="flex-direction:column;align-items:flex-start;gap:4px"><span class="lbl">${esc(c.label)}</span><span class="hint">${esc(c.hint)}</span></span><span class="knob"></span></button></div>`;
@@ -3695,7 +3728,7 @@ th.n { text-align: right; }
     }
     if (c.t === 'mix') {
       const m = st.mix, tot = (m.fpv + m.bomber + m.gunship) || 1;
-      return `<div class="ctl"><div class="ctl-head"><span class="lbl">Swarm mix</span></div>${['fpv', 'bomber', 'gunship'].map((k) => {
+      return `<div class="ctl${isRandom(c) ? ' is-random' : ''}" id="ctl-mix"><div class="ctl-head"><span class="lbl">Swarm mix</span>${badge(c)}</div>${['fpv', 'bomber', 'gunship'].map((k) => {
         const v = m[k], p = v;
         return `<div class="ctl"><div class="ctl-head"><label for="c-mix-${k}" style="font-weight:500">${esc(MIX_SUB[k])}</label><output id="o-mix-${k}">${Math.round(v * 100 / tot)}%</output></div><input type="range" id="c-mix-${k}" data-mix="${k}" min="0" max="100" step="1" value="${v}" style="--p:${p}%"></div>`;
       }).join('')}</div>`;
@@ -3720,7 +3753,11 @@ th.n { text-align: right; }
 
   function renderBody() {
     const tab = TABS.find((t) => t.id === ui.tab);
-    $('panelBody').innerHTML = (tab.note ? `<p class="tabnote">${esc(tab.note)}</p>` : '') + tab.ctl.map(ctlHtml).join('');
+    let note = tab.note;
+    if (tab.id === 'field') note = ui.st.scenarioMode === 'random'
+      ? 'Each condition is either drawn at random for every battle or fixed at your value. Changing a value fixes it; tap Random to draw it again.'
+      : 'Fixed mode: every battle is fought on exactly these conditions.';
+    $('panelBody').innerHTML = (note ? `<p class="tabnote">${esc(note)}</p>` : '') + tab.ctl.map(ctlHtml).join('');
     $('panelBody').setAttribute('aria-labelledby', 'tab-' + tab.id);
     renderDeploy();
   }
@@ -3734,13 +3771,57 @@ th.n { text-align: right; }
     save();
     if (full) renderBody(); else renderDeploy();
     renderPresets();
-    if (state === 'command') hudCommand();
+    if (state === 'command') { hudCommand(); schedulePreview(); }
+  }
+  const CTL_BY_KEY = {};
+  // A Field value the user sets should take effect: fix that condition if it was being randomized.
+  function pin(k) {
+    const c = CTL_BY_KEY[k];
+    if (!c || !isRandom(c)) return false;
+    ui.st.randomize[c.rk] = false;
+    let shown = ui.st[k];
+    if (k === 'mix') { const m = ui.st.mix, tot = (m.fpv + m.bomber + m.gunship) || 1; shown = ['fpv', 'bomber', 'gunship'].map((x) => Math.round(m[x] * 100 / tot)).join('/') + ' (FPV/bomber/gunship)'; }
+    else if (c.o) { const o = c.o.find((x) => String(x.v) === String(shown)); if (o) shown = o.l; } else if (c.fmt) shown = c.fmt(shown);
+    toast(`${c.label} fixed at ${shown} for every battle. Tap Random to draw it again.`);
+    const wrap = $('ctl-' + k);
+    if (wrap) {
+      wrap.classList.remove('is-random');
+      const b = wrap.querySelector('.rk'); if (b) { b.setAttribute('aria-pressed', 'false'); b.textContent = 'Fixed'; }
+    }
+    return true;
+  }
+  // live 3D preview of the current plan and battlefield behind the command panel
+  let previewT = 0;
+  function schedulePreview() { clearTimeout(previewT); previewT = setTimeout(refreshPreview, 280); }
+  function refreshPreview() {
+    if (state !== 'command') return;
+    const s = S.createBattle(norm(), 0, null);
+    if (rend) { rend.loadBattle(s, { keep: true }); backdrop = R.snapshot(s); }
+    previewInfo = s;
+    renderPreviewTag();
+  }
+  let previewInfo = null;
+  function renderPreviewTag() {
+    const el = $('preview'); if (!el || !previewInfo) return;
+    const sc = previewInfo.sc, n = previewInfo.caves.length;
+    const rnd = ui.st.scenarioMode === 'random';
+    el.innerHTML = `<span class="label">${rnd ? 'Preview · battle 1 of a randomized run' : 'Preview · every battle'}</span><b>${esc(TERRAIN_NAME[sc.terrain])}, ${esc(TOD_NAME[sc.timeOfDay].toLowerCase())}</b><small>${esc(TREE_NAME[sc.trees])} · ${n} cave${n === 1 ? '' : 's'} · wind ${sc.wind.toFixed(0)} m/s · height ${sc.amp.toFixed(1)} m</small>`;
+  }
+  function refreshRolesUI() {
+    const out = $('o-roles'); if (!out) return;
+    const budget = S.friendlyBudget(norm()), r = ui.st.roles, sum = r.interceptor + r.spotter + r.decoy;
+    out.textContent = `${sum} of ${budget}`;
+    for (const k of ['interceptor', 'spotter', 'decoy']) {
+      const n = $('n-r-' + k); if (n) n.textContent = r[k];
+      const minus = document.querySelector(`[data-step="r-${k}"][data-d="-1"]`), plus = document.querySelector(`[data-step="r-${k}"][data-d="1"]`);
+      if (minus) minus.disabled = r[k] <= 0; if (plus) plus.disabled = sum >= budget;
+    }
   }
 
   function bindPanel() {
     $('presets').addEventListener('click', (e) => {
       const b = e.target.closest('[data-p]'); if (!b) return;
-      ui.st = S.applyPreset(norm(), b.dataset.p); ui.preset = b.dataset.p; save(); renderPresets(); renderBody();
+      ui.st = S.applyPreset(norm(), b.dataset.p); ui.preset = b.dataset.p; save(); renderPresets(); renderBody(); schedulePreview();
       toast(S.PRESETS[b.dataset.p].blurb);
     });
     $('tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-t]'); if (!b) return; ui.tab = b.dataset.t; renderTabs(); renderBody(); $('panelBody').scrollTop = 0; });
@@ -3752,14 +3833,15 @@ th.n { text-align: right; }
         ui.st[el.dataset.k] = parseFloat(el.value);
         el.style.setProperty('--p', ((el.value - c.min) / (c.max - c.min)) * 100 + '%');
         $('o-' + el.dataset.k).textContent = c.fmt(parseFloat(el.value));
-        if (el.dataset.k === 'friendlyPct' || el.dataset.k === 'droneCount') { fitRoles(); }
+        if (el.dataset.k === 'friendlyPct' || el.dataset.k === 'droneCount') { fitRoles(); refreshRolesUI(); }
+        pin(el.dataset.k);
         changed(false);
-        if (el.dataset.k === 'friendlyPct') { const r = body.querySelector('#o-roles'); if (r) changed(true); }
       } else if (el.dataset.mix) {
         ui.st.mix[el.dataset.mix] = parseFloat(el.value);
         el.style.setProperty('--p', el.value + '%');
         const m = ui.st.mix, tot = (m.fpv + m.bomber + m.gunship) || 1;
         for (const k of ['fpv', 'bomber', 'gunship']) $('o-mix-' + k).textContent = Math.round(m[k] * 100 / tot) + '%';
+        pin('mix');
         changed(false);
       } else if (el.id === 'c-seed') {
         const v = parseInt(el.value, 10); if (v > 0) { ui.st.seed = v >>> 0; changed(false); }
@@ -3769,7 +3851,7 @@ th.n { text-align: right; }
     });
     body.addEventListener('change', (e) => {
       const el = e.target;
-      if (el.tagName === 'SELECT' && el.dataset.k) { ui.st[el.dataset.k] = el.value; changed(false); }
+      if (el.tagName === 'SELECT' && el.dataset.k) { ui.st[el.dataset.k] = el.value; pin(el.dataset.k); changed(false); }
       if (el.id === 'c-battles' || el.id === 'c-seed') changed(true);
     });
     body.addEventListener('click', (e) => {
@@ -3778,6 +3860,7 @@ th.n { text-align: right; }
         const c = TABS.flatMap((t) => t.ctl).find((x) => x.k === b.dataset.seg);
         const o = c.o.find((x) => String(x.v) === b.dataset.v);
         ui.st[b.dataset.seg] = o.v;
+        pin(b.dataset.seg);
         if (b.dataset.seg === 'quality' && rend) applyQuality();
         changed(true);
       } else if (b.dataset.tog) { ui.st[b.dataset.tog] = !ui.st[b.dataset.tog]; changed(true); }
@@ -3790,11 +3873,12 @@ th.n { text-align: right; }
         const i = +b.dataset.prio, j = i + +b.dataset.d, p = ui.st.priority;
         if (j >= 0 && j < p.length) { const t = p[i]; p[i] = p[j]; p[j] = t; changed(true); }
       } else if (b.dataset.rand) { ui.st.randomize[b.dataset.rand] = !ui.st.randomize[b.dataset.rand]; changed(true); }
+      else if (b.dataset.rk) { ui.st.randomize[b.dataset.rk] = !ui.st.randomize[b.dataset.rk]; changed(true); }
       else if (b.dataset.nb) { ui.st.battles = +b.dataset.nb; changed(true); }
       else if (b.id === 'newSeed') { ui.st.seed = randomSeed(); changed(true); toast('New seed ' + ui.st.seed + ': fresh battlefields.'); }
     });
     $('deploy').addEventListener('click', () => deploy());
-    $('btnReset').addEventListener('click', () => { const keepSeed = ui.st.seed; ui.st = S.normalize({ seed: keepSeed }); ui.preset = 'ring'; save(); renderPresets(); renderBody(); toast('Plan reset to Hold the Ring.'); });
+    $('btnReset').addEventListener('click', () => { const keepSeed = ui.st.seed; ui.st = S.normalize({ seed: keepSeed }); ui.preset = 'ring'; save(); renderPresets(); renderBody(); schedulePreview(); toast('Plan reset to Hold the Ring.'); });
     $('btnShare').addEventListener('click', () => {
       const code = encodeSetup(ui.st);
       $('sharebox').hidden = false; $('shareLabel').textContent = 'Setup code: copy it, or add it after # in the page link';
@@ -3809,7 +3893,7 @@ th.n { text-align: right; }
       if ($('shareAction').dataset.mode === 'load') {
         const st = decodeSetup($('shareText').value);
         if (!st) { toast('That code could not be read. Paste the whole code, starting with g1.'); return; }
-        ui.st = st; ui.preset = detectPreset(); save(); renderPresets(); renderBody(); $('sharebox').hidden = true; toast('Setup loaded.');
+        ui.st = st; ui.preset = detectPreset(); save(); renderPresets(); renderBody(); schedulePreview(); $('sharebox').hidden = true; toast('Setup loaded.');
       } else copyText($('shareText').value, () => toast('Setup code copied.'), () => { $('shareText').select(); toast('Select the code and copy it.'); });
     });
     $('shareClose').addEventListener('click', () => { $('sharebox').hidden = true; });
@@ -4289,7 +4373,7 @@ th.n { text-align: right; }
     </div>`;
     $('debrief').scrollTop = 0;
     $('dRedeploy').addEventListener('click', () => { ui.st = S.deepClone(lastRun.settings); deploy(); });
-    $('dEdit').addEventListener('click', () => { setState('command'); renderBody(); });
+    $('dEdit').addEventListener('click', () => { setState('command'); renderBody(); refreshPreview(); });
     $('dCsv').addEventListener('click', () => {
       const csv = toCsv(lastRun.results);
       copyText(csv, () => toast(`Copied ${lastRun.results.length} rows of CSV.`), () => { $('csvBox').hidden = false; $('csvText').value = csv; $('csvText').select(); toast('Select the CSV below and copy it.'); });
@@ -4527,25 +4611,34 @@ th.n { text-align: right; }
     if (window.claude && window.claude.hot && window.claude.hot.snapshot) {
       try { window.claude.hot.snapshot(() => ({ settings: ui.st })); } catch (e) { /* optional */ }
     }
+    for (const t of TABS) for (const c of t.ctl) if (c.k || c.rk) CTL_BY_KEY[c.k || c.rk] = c;
     buildPips();
     renderPresets(); renderTabs(); renderBody(); bindPanel(); bindControls();
     try { rend = R ? R.create($('view'), { tier: pickTier() }) : null; } catch (e) { console.warn('3D unavailable', e); rend = null; }
     if (rend) {
       rend.onMode = () => updateControls();
       rend.onContext = (ok) => { $('ctxLost').hidden = ok; };
-      $('ctxBtn').addEventListener('click', () => { const ext = rend.renderer.getContext().getExtension('WEBGL_lose_context'); if (ext) ext.restoreContext(); $('ctxLost').hidden = true; });
+      // a lost context no longer hands out its extensions, so keep this one from the start
+      const loseExt = rend.renderer.getContext().getExtension('WEBGL_lose_context');
+      $('ctxBtn').addEventListener('click', () => {
+        if (loseExt) { try { loseExt.restoreContext(); } catch (e) { /* the browser restores on its own */ } }
+        // still dead after a moment: reload, keeping the plan
+        setTimeout(() => { if (rend.lost) { try { localStorage.setItem('sg-settings', JSON.stringify(ui.st)); } catch (e) { /* storage unavailable */ } location.reload(); } }, 1500);
+      });
       // a battlefield behind the command panel
       const s = S.createBattle(norm(), 0, null);
-      rend.loadBattle(s); backdrop = R.snapshot(s);
+      rend.loadBattle(s); backdrop = R.snapshot(s); previewInfo = s;
       rend.setMode('auto');
     } else {
       toast('3D graphics are unavailable here, so battles run as simulations only.');
     }
     setState('command');
+    if (!previewInfo) previewInfo = S.createBattle(norm(), 0, null);
+    renderPreviewTag();
     requestAnimationFrame(loop);
   }
 
-  window.__sg = { get rend() { return rend; }, get state() { return state; }, get pb() { return pb; } };
+  window.__sg = { get rend() { return rend; }, get state() { return state; }, get pb() { return pb; }, get ui() { return ui; }, get run() { return run; }, get lastRun() { return lastRun; }, get preview() { return previewInfo; }, get speed() { return speed; }, get paused() { return paused; }, get backdrop() { return backdrop; } };
   const hot = window.claude && window.claude.hot;
   if (hot && hot.ready) hot.ready(start); else start((hot && hot.data) || {});
 })();
